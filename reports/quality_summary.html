@@ -1,8 +1,8 @@
 <!doctype html><html><head><meta charset='utf-8'><title>Quality Gate</title>
 <style>body{font-family:Arial,sans-serif;max-width:1100px;margin:40px auto;padding:0 20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px;text-align:left}pre{white-space:pre-wrap;background:#f4f4f4;padding:12px}</style></head>
-<body><h1>Quality Gate: PASS</h1><table><tr><th>Gate</th><th>Status</th><th>Seconds</th></tr><tr><td>lockfile</td><td>PASS</td><td>0.098</td></tr><tr><td>ruff</td><td>PASS</td><td>0.148</td></tr><tr><td>mypy</td><td>PASS</td><td>0.416</td></tr><tr><td>static_contract</td><td>PASS</td><td>0.131</td></tr><tr><td>compile</td><td>PASS</td><td>0.082</td></tr><tr><td>documentation</td><td>PASS</td><td>0.062</td></tr><tr><td>architecture</td><td>PASS</td><td>0.077</td></tr><tr><td>completeness</td><td>PASS</td><td>0.175</td></tr><tr><td>secret_scan</td><td>PASS</td><td>3.588</td></tr><tr><td>tests_with_coverage</td><td>PASS</td><td>9.708</td></tr><tr><td>coverage_threshold</td><td>PASS</td><td>0.459</td></tr><tr><td>coverage_xml</td><td>PASS</td><td>0.466</td></tr><tr><td>offline_evaluation</td><td>PASS</td><td>0.276</td></tr><tr><td>interview_demo</td><td>PASS</td><td>0.618</td></tr><tr><td>package_build</td><td>PASS</td><td>0.988</td></tr><tr><td>wheel_install_smoke</td><td>PASS</td><td>0.710</td></tr><tr><td>docker_build</td><td>SKIP</td><td>0.000</td></tr><tr><td>report_sanitization</td><td>PASS</td><td>0.001</td></tr></table><h2>lockfile - PASS</h2><pre>Lockfile gate passed: 16 runtime pins, 40 CI/dev pins</pre><h2>ruff - PASS</h2><pre>All checks passed!</pre><h2>mypy - PASS</h2><pre>Success: no issues found in 57 source files</pre><h2>static_contract - PASS</h2><pre>Static contract passed for 57 production Python modules</pre><h2>compile - PASS</h2><pre>No output</pre><h2>documentation - PASS</h2><pre>Documentation gate passed for 109 files</pre><h2>architecture - PASS</h2><pre>Architecture gate passed: 18 governed stages and all critical artifacts present</pre><h2>completeness - PASS</h2><pre>Completeness audit passed; report: reports/completeness_check.md</pre><h2>secret_scan - PASS</h2><pre>Secret scan passed</pre><h2>tests_with_coverage - PASS</h2><pre>........................................................................ [ 64%]
+<body><h1>Quality Gate: PASS</h1><table><tr><th>Gate</th><th>Status</th><th>Seconds</th></tr><tr><td>lockfile</td><td>PASS</td><td>0.094</td></tr><tr><td>ruff</td><td>PASS</td><td>0.139</td></tr><tr><td>mypy</td><td>PASS</td><td>0.449</td></tr><tr><td>static_contract</td><td>PASS</td><td>0.123</td></tr><tr><td>compile</td><td>PASS</td><td>0.081</td></tr><tr><td>documentation</td><td>PASS</td><td>0.061</td></tr><tr><td>architecture</td><td>PASS</td><td>0.065</td></tr><tr><td>completeness</td><td>PASS</td><td>0.167</td></tr><tr><td>secret_scan</td><td>PASS</td><td>3.058</td></tr><tr><td>tests_with_coverage</td><td>PASS</td><td>9.933</td></tr><tr><td>coverage_threshold</td><td>PASS</td><td>0.445</td></tr><tr><td>coverage_xml</td><td>PASS</td><td>0.530</td></tr><tr><td>offline_evaluation</td><td>PASS</td><td>0.282</td></tr><tr><td>interview_demo</td><td>PASS</td><td>0.622</td></tr><tr><td>package_build</td><td>PASS</td><td>0.894</td></tr><tr><td>wheel_install_smoke</td><td>PASS</td><td>0.654</td></tr><tr><td>docker_build</td><td>SKIP</td><td>0.000</td></tr><tr><td>report_sanitization</td><td>PASS</td><td>0.001</td></tr></table><h2>lockfile - PASS</h2><pre>Lockfile gate passed: 16 runtime pins, 40 CI/dev pins</pre><h2>ruff - PASS</h2><pre>All checks passed!</pre><h2>mypy - PASS</h2><pre>Success: no issues found in 57 source files</pre><h2>static_contract - PASS</h2><pre>Static contract passed for 57 production Python modules</pre><h2>compile - PASS</h2><pre>No output</pre><h2>documentation - PASS</h2><pre>Documentation gate passed for 109 files</pre><h2>architecture - PASS</h2><pre>Architecture gate passed: 18 governed stages and all critical artifacts present</pre><h2>completeness - PASS</h2><pre>Completeness audit passed; report: reports/completeness_check.md</pre><h2>secret_scan - PASS</h2><pre>Secret scan passed</pre><h2>tests_with_coverage - PASS</h2><pre>........................................................................ [ 64%]
 .......................................                                  [100%]
-111 passed in 4.40s</pre><h2>coverage_threshold - PASS</h2><pre>Name                                                                       Stmts   Miss Branch BrPart  Cover   Missing
+111 passed in 4.49s</pre><h2>coverage_threshold - PASS</h2><pre>Name                                                                       Stmts   Miss Branch BrPart  Cover   Missing
 ----------------------------------------------------------------------------------------------------------------------
 src/invoice_canonicalizer/application/budget.py                               29      1      6      1    94%   41
 src/invoice_canonicalizer/application/canonicalization.py                    137      3     24      3    96%   79, 116-117, 142-&gt;189
@@ -90,7 +90,7 @@ TOTAL                                                                       2617
   ✓ Human reviews                0
   ✓ Result                       deterministic replay
 
- 04  NOW INTRODUCE A PRODUCT THE CATALOG DOES NOT KNOW ───────────────────────────────────────────────────
+ 05  NOW INTRODUCE A PRODUCT THE CATALOG DOES NOT KNOW ───────────────────────────────────────────────────
 
 ╭────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ NOVELTY SCENARIO                                                                                       │
@@ -100,7 +100,7 @@ TOTAL                                                                       2617
 │ Goal:                      resolve safely without silently trusting a guess                            │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
- 05  PIPELINE TRACE — ONE UNKNOWN THROUGH ALL THREE TIERS ────────────────────────────────────────────────
+ 06  PIPELINE TRACE — ONE UNKNOWN THROUGH ALL THREE TIERS ────────────────────────────────────────────────
   DOCUMENT GATE
     ✓ extraction already validated
     ✓ arithmetic already validated
@@ -128,7 +128,7 @@ TOTAL                                                                       2617
     repeated occurrences 26
     extra model calls    0  (pending candidate is reused)
 
- 06  HUMAN APPROVAL → REUSABLE KNOWLEDGE ─────────────────────────────────────────────────────────────────
+ 07  HUMAN APPROVAL → REUSABLE KNOWLEDGE ─────────────────────────────────────────────────────────────────
 
   Reviewer decision      ✓ APPROVED
   Knowledge promoted     Black Leather Jacket Midnight  →  Black Leather Jacket
@@ -150,7 +150,7 @@ TOTAL                                                                       2617
 │ WILD  →  TAMED                                                                                         │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
- 07  GOLDEN REGRESSION EVALUATION ────────────────────────────────────────────────────────────────────────
+ 08  GOLDEN REGRESSION EVALUATION ────────────────────────────────────────────────────────────────────────
   Versioned offline regression evidence — not a population-level accuracy claim.
 
   ✓ Golden cases                 11
@@ -186,6 +186,6 @@ TOTAL                                                                       2617
 Building wheels for collected packages: invoice-canonicalization-agent
   Building wheel for invoice-canonicalization-agent (pyproject.toml): started
   Building wheel for invoice-canonicalization-agent (pyproject.toml): finished with status &#x27;done&#x27;
-  Created wheel for invoice-canonicalization-agent: filename=invoice_canonicalization_agent-1.0.0-py3-none-any.whl size=89993 sha256=b4b656d701f6349cf9f4a892e475695e1e0fe48a1cacc25911839bde0aefd77a
-  Stored in directory: /private/var/folders/66/3kjx4ck97gjfgcmxk9dyxld40000gn/T/pip-ephem-wheel-cache-bwy7oa3q/wheels/3d/b1/5f/242803963b8977209a4ca14c1d1ff4db1d6e1135b43905227c
+  Created wheel for invoice-canonicalization-agent: filename=invoice_canonicalization_agent-1.0.0-py3-none-any.whl size=90425 sha256=60f97ccdf4bc30bf6f77bacb7a3a62e1044c72df56eb48e041334ada0c150eb5
+  Stored in directory: /private/var/folders/66/3kjx4ck97gjfgcmxk9dyxld40000gn/T/pip-ephem-wheel-cache-c05m3pas/wheels/3d/b1/5f/242803963b8977209a4ca14c1d1ff4db1d6e1135b43905227c
 Successfully built invoice-canonicalization-agent</pre><h2>wheel_install_smoke - PASS</h2><pre>{&quot;description&quot;: &quot;Crew Socks&quot;, &quot;review&quot;: false}</pre><h2>docker_build - SKIP</h2><pre>Docker engine is not installed</pre><h2>report_sanitization - PASS</h2><pre>No build-environment paths or private package-index hosts found</pre></body></html>

@@ -234,8 +234,30 @@ def _print_quality(challenge: object) -> None:
     _metric("Currency / amount due", f"{_text(context.financials.currency)} {_money(context.financials.amount_due)}")
 
 
+def _print_trusted_knowledge_boundary() -> None:
+    _rule("TRUSTED KNOWLEDGE STORE — THE DATABASE IS THE TEXTBOOK", number="04")
+    print(STYLE.dim("  The same approved catalog powers exact lookup and the RAG-style evidence path."))
+    print()
+    _panel([
+        "HUMAN-APPROVED KNOWLEDGE STORE",
+        "canonical products · approved aliases · tenant + partner scope · taxonomy version",
+        "",
+        "Tier 1: exact approved alias lookup",
+        "        → returns canonical product ID with no LLM call",
+        "",
+        "Tier 2: approved retrieval / RAG evidence",
+        "        → only reads approved knowledge before a bounded AI proposal or abstention",
+        "",
+        "Unapproved model output is never indexed as trusted retrieval evidence.",
+    ])
+    print()
+    _metric("Source of truth", "tenant-scoped approved catalog", status="ok")
+    _metric("Model role", "proposal mechanism for unknowns", status="ok")
+    _metric("Traceability", "alias / taxonomy / review evidence retained", status="ok")
+
+
 def _print_unknown_intro(description: str) -> None:
-    _rule("NOW INTRODUCE A PRODUCT THE CATALOG DOES NOT KNOW", number="04")
+    _rule("NOW INTRODUCE A PRODUCT THE CATALOG DOES NOT KNOW", number="05")
     print()
     _panel([
         "NOVELTY SCENARIO",
@@ -253,7 +275,7 @@ def _print_pipeline_trace(
     repeat_model_calls: int,
     provider_name: str,
 ) -> None:
-    _rule("PIPELINE TRACE — ONE UNKNOWN THROUGH ALL THREE TIERS", number="05")
+    _rule("PIPELINE TRACE — ONE UNKNOWN THROUGH ALL THREE TIERS", number="06")
 
     print(STYLE.bold("  DOCUMENT GATE"))
     print(f"    {STYLE.green('✓')} extraction already validated")
@@ -289,7 +311,7 @@ def _print_pipeline_trace(
 
 
 def _print_learning(approved_description: str, learned: CanonicalizationDecision, additional_calls: int) -> None:
-    _rule("HUMAN APPROVAL → REUSABLE KNOWLEDGE", number="06")
+    _rule("HUMAN APPROVAL → REUSABLE KNOWLEDGE", number="07")
     print()
     print(f"  Reviewer decision      {STYLE.green('✓ APPROVED')}")
     print(f"  Knowledge promoted     Black Leather Jacket Midnight  →  {approved_description}")
@@ -319,7 +341,7 @@ def _format_percent(value: object) -> str:
 
 
 def _print_golden_evaluation(golden: dict[str, object]) -> None:
-    _rule("GOLDEN REGRESSION EVALUATION", number="07")
+    _rule("GOLDEN REGRESSION EVALUATION", number="08")
     print(STYLE.dim("  Versioned offline regression evidence — not a population-level accuracy claim."))
     print()
     _metric("Golden cases", str(golden.get("cases", "-")), status="ok")
@@ -397,7 +419,7 @@ def _build_evidence(
         "narrative": {
             "core_tiers": [
                 "Tier 1 - deterministic approved lookup (no LLM call)",
-                "Tier 2 - approved retrieval / bounded AI for uncertainty",
+                "Tier 2 - approved retrieval / bounded AI for uncertainty (approved catalog evidence only)",
                 "Tier 3 - governed human learning that promotes trusted knowledge",
             ],
             "delivery_primitives": ["REST", "MCP", "Docker", "CI/CD", "PostgreSQL migration"],

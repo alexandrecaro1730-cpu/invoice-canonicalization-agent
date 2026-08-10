@@ -83,6 +83,32 @@ PRODUCT CANONICALIZATION
 
 The goal is **not to make the LLM more consistent**. The goal is to **need the LLM less often**.
 
+
+## Trusted knowledge and RAG boundary
+
+The same **trusted knowledge store** supports both deterministic processing and the AI-assisted fallback:
+
+```text
+HUMAN-APPROVED KNOWLEDGE STORE
+canonical products + approved aliases + tenant / partner scope
+        |                                  |
+        v                                  v
+Tier 1 exact lookup                  Tier 2 approved retrieval
+(no LLM call)                        (evidence for bounded AI / abstain)
+```
+
+A useful analogy is an **open-book exam**: the model may be smart, but it is only allowed to use the approved textbook. The textbook is the tenant-scoped catalog controlled by the organization, not the model's general knowledge.
+
+This matters because:
+
+- exact aliases are the strongest evidence path and return a canonical product ID without a model call;
+- retrieval/RAG uses **approved catalog evidence only** when exact lookup misses;
+- unapproved model output is never indexed back into retrieval evidence;
+- every automated decision carries traceability such as tenant, partner, taxonomy version, alias/candidate evidence, model/prompt provenance, and review status.
+
+In short: **the database is the source of truth; the model is a controlled proposal mechanism for the unknown tail**.
+
+
 ## Run it locally
 
 Recommended: Python 3.12.

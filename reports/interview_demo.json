@@ -2,7 +2,7 @@
   "narrative": {
     "core_tiers": [
       "Tier 1 - deterministic approved lookup (no LLM call)",
-      "Tier 2 - approved retrieval / bounded AI for uncertainty",
+      "Tier 2 - approved retrieval / bounded AI for uncertainty (approved catalog evidence only)",
       "Tier 3 - governed human learning that promotes trusted knowledge"
     ],
     "delivery_primitives": [
@@ -258,14 +258,14 @@
     "additional_llm_calls_for_repeats": 0
   },
   "tier_3_human_learning": {
-    "approved_product_id": "product-5fe3be6e-012e-4fc9-bedf-e975f47d56dc",
+    "approved_product_id": "product-e86d70e4-88e9-4dfa-b2e0-9c7a06cbd5b8",
     "approved_description": "Black Leather Jacket",
     "next_decision_kind": "exact_alias",
     "next_canonical_description": "Black Leather Jacket",
     "additional_llm_calls_after_approval": 0
   },
   "human_learning": {
-    "approved_product_id": "product-5fe3be6e-012e-4fc9-bedf-e975f47d56dc",
+    "approved_product_id": "product-e86d70e4-88e9-4dfa-b2e0-9c7a06cbd5b8",
     "approved_description": "Black Leather Jacket",
     "next_decision_kind": "exact_alias",
     "next_canonical_description": "Black Leather Jacket",
