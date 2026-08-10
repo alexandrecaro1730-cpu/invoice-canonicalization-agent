@@ -1,0 +1,25 @@
+# Business objective: prevent credentials, local runtime data, caches, and disposable build artifacts from entering source control.
+# Technical description: ignores developer/runtime noise while keeping a small sanitized assessor-evidence set reviewable in Git.
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+coverage.xml
+htmlcov/
+.runtime/
+.venv/
+dist/
+build/
+*.egg-info/
+.env
+.DS_Store
+
+# Quality-gate outputs are reproducible. Keep only the small sanitized evidence files useful to an assessor.
+reports/*
+!reports/.gitkeep
+!reports/final_delivery_check.md
+!reports/evaluation.json
+!reports/interview_demo.json
+!reports/quality_summary.html

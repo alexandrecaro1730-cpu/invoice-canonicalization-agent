@@ -1,0 +1,23 @@
+# Business objective: start the assessment service with persistent local state using one container command.
+# Technical description: builds the application image, maps the API port, mounts a named data volume, and applies safe defaults.
+services:
+  app:
+    build: .
+    ports:
+      - "8000:8000"
+    environment:
+      ICA_DATABASE_PATH: /var/lib/invoice-canonicalizer/catalog.db
+      ICA_PROVIDER: fixture
+      ICA_AUTH_MODE: disabled
+      ICA_LOG_LEVEL: INFO
+    volumes:
+      - canonicalizer-data:/var/lib/invoice-canonicalizer
+    read_only: true
+    tmpfs:
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+volumes:
+  canonicalizer-data:

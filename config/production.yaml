@@ -1,0 +1,45 @@
+# Business objective: document production-oriented overrides without embedding credentials or trusting caller-supplied tenant scope.
+# Technical description: enables API-key tenant binding, external model pricing, bounded retries, strict retrieval thresholds, OCR/model extraction fallback, and production limits.
+storage:
+  database_path: /var/lib/invoice-canonicalizer/catalog.db
+  seed_catalog: data/seed/catalog.json
+  client_styles: data/seed/client_styles.json
+prompts:
+  directory: prompts
+auth:
+  mode: api-key
+  api_keys_env: ICA_API_KEYS_JSON
+model:
+  provider: openai-compatible
+  model: replace-with-approved-model
+  base_url: https://api.openai.com
+  api_key_env: OPENAI_API_KEY
+  # Replace with the approved model's current contract pricing before deployment.
+  input_cost_per_million: "1.00"
+  output_cost_per_million: "4.00"
+  max_output_tokens: 350
+  timeout_seconds: 20
+  max_retries: 2
+  retry_backoff_seconds: 0.25
+taxonomy:
+  version: 2026.08.1
+retrieval:
+  top_k: 8
+  proposal_threshold: 0.78
+  margin_threshold: 0.12
+  auto_resolve_threshold: 0.97
+  auto_margin_threshold: 0.15
+  semantic:
+    enabled: false
+    weight: 0.20
+security:
+  max_file_size_bytes: 10000000
+cost:
+  max_model_calls_per_document: 20
+  max_cost_usd_per_document: "0.20"
+documents:
+  enable_ocr_fallback: true
+  enable_model_extraction_fallback: true
+  max_extraction_prompt_chars: 12000
+observability:
+  log_level: INFO

@@ -1,0 +1,88 @@
+# Business objective: make installation, testing, packaging, and command execution reproducible.
+# Technical description: defines runtime dependencies, optional development tools, entry points, and pytest/coverage settings.
+[build-system]
+requires = ["setuptools==82.0.1", "wheel==0.45.1"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "invoice-canonicalization-agent"
+version = "1.0.0"
+description = "Production-oriented deterministic invoice product canonicalization with bounded AI and human review."
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115,<1",
+  "pydantic>=2.9,<3",
+  "pypdf>=5,<7",
+  "python-multipart>=0.0.12,<1",
+  "PyYAML>=6,<7",
+  "uvicorn>=0.30,<1"
+]
+
+[project.optional-dependencies]
+dev = [
+  "coverage>=7,<8",
+  "httpx>=0.27,<1",
+  "pytest>=8,<10",
+  "pytest-cov>=6,<8",
+  "mypy>=1.17,<2",
+  "ruff>=0.12,<1",
+  "types-PyYAML>=6,<7",
+  "build>=1,<2"
+]
+fixtures = [
+  "python-docx>=1.1,<2",
+  "reportlab>=4,<5"
+]
+
+[project.scripts]
+invoice-canonicalizer = "invoice_canonicalizer.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers --strict-config"
+testpaths = ["tests"]
+markers = [
+  "integration: exercises multiple infrastructure components",
+  "e2e: processes full documents through the workflow",
+  "performance: checks bounded local performance",
+]
+
+[tool.coverage.run]
+branch = true
+source = ["invoice_canonicalizer"]
+omit = [
+  "*/__main__.py",
+  "*/api/app.py"
+]
+
+[tool.coverage.report]
+show_missing = true
+skip_covered = true
+fail_under = 80
+exclude_also = [
+  "if TYPE_CHECKING:",
+  "raise NotImplementedError"
+]
+
+[tool.ruff]
+target-version = "py311"
+line-length = 120
+exclude = ["reports", ".runtime", "build", "dist"]
+
+[tool.ruff.lint]
+select = ["E9", "F"]
+ignore = ["F401", "F841"]
+
+[tool.mypy]
+python_version = "3.11"
+files = ["src/invoice_canonicalizer"]
+check_untyped_defs = true
+disallow_untyped_defs = true
+no_implicit_optional = true
+warn_redundant_casts = true
+warn_unused_ignores = true
+ignore_missing_imports = true
+pretty = true

@@ -1,0 +1,95 @@
+{
+  "business_objective": "Provide a deterministic full-invoice JSON fixture.",
+  "technical_description": "The same parties, commercial totals, and six challenge invoice lines are rendered into every supported format.",
+  "invoice": {
+    "invoice_number": "19283746552",
+    "invoice_date": "2025-07-01",
+    "due_date": "2025-07-16",
+    "payment_terms": "Due in 15 days",
+    "currency": "USD",
+    "parties": [
+      {
+        "role": "seller",
+        "name": "Testinger GmbH",
+        "address_lines": [
+          "123 Test Street",
+          "Testingen, Testern",
+          "0815"
+        ],
+        "phone": "+00 1234 5678 00",
+        "email": "email@testinger.ts",
+        "website": "testinger.ts"
+      },
+      {
+        "role": "bill_to",
+        "name": "Recipient Corp.",
+        "contact_name": "Mr Obertestinger",
+        "address_lines": [
+          "123 Empfängergasse",
+          "0815 Recipstan"
+        ],
+        "phone": "+00 1234 8876 0912",
+        "email": "recip@recipcopr.co"
+      },
+      {
+        "role": "ship_to",
+        "name": "Recipient Corp.",
+        "contact_name": "Mr Obertestinger",
+        "address_lines": [
+          "123 Empfängergasse",
+          "0815 Austria"
+        ],
+        "phone": "+00 1234 8876 0912",
+        "email": "recip@recipcopr.co"
+      }
+    ],
+    "financials": {
+      "currency": "USD",
+      "subtotal": "280.00",
+      "discount_total": "13.00",
+      "subtotal_after_discount": "267.00",
+      "tax_rate_percent": "20.00",
+      "tax_total": "53.40",
+      "shipping_total": "12.00",
+      "amount_due": "332.40"
+    }
+  },
+  "lines": [
+    {
+      "description": "Highlife Steel Accessories",
+      "quantity": 1,
+      "unit_price": "10.00",
+      "total": "10.00"
+    },
+    {
+      "description": "Sneaker “Unstoppable”",
+      "quantity": 2,
+      "unit_price": "11.00",
+      "total": "22.00"
+    },
+    {
+      "description": "T-Shirt White “Polarbear”",
+      "quantity": 3,
+      "unit_price": "12.00",
+      "total": "36.00"
+    },
+    {
+      "description": "T-Shirt Beige “Grizzly”",
+      "quantity": 4,
+      "unit_price": "13.00",
+      "total": "52.00"
+    },
+    {
+      "description": "Shorts “El Camino”",
+      "quantity": 5,
+      "unit_price": "14.00",
+      "total": "70.00"
+    },
+    {
+      "description": "Socks, black",
+      "quantity": 6,
+      "unit_price": "15.00",
+      "total": "90.00"
+    }
+  ]
+}

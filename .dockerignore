@@ -1,0 +1,10 @@
+# Business objective: keep container builds small and prevent local secrets or reports from entering images.
+# Technical description: excludes VCS, virtual environments, runtime databases, caches, and generated evidence.
+.git
+.venv
+.runtime
+.pytest_cache
+__pycache__
+reports
+*.zip
+.env

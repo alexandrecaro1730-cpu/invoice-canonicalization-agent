@@ -1,0 +1,135 @@
+{
+  "business_objective": "Seed approved product knowledge for the supplied invoice challenge.",
+  "technical_description": "Each product has a stable ID, canonical description, attributes, and approved tenant-scoped aliases.",
+  "products": [
+    {
+      "product_id": "product-highlife-components",
+      "tenant_id": "testinger",
+      "partner_id": "default-partner",
+      "canonical_description": "Highlife Components",
+      "category": "components",
+      "attributes": {
+        "category_hint": "components"
+      },
+      "aliases": [
+        "Highlife Steel Accessories",
+        "Steel Accessories",
+        "Steel Fittings",
+        "Highlife Components"
+      ]
+    },
+    {
+      "product_id": "product-performance-sneakers",
+      "tenant_id": "testinger",
+      "partner_id": "default-partner",
+      "canonical_description": "Performance Sneakers",
+      "category": "footwear",
+      "attributes": {
+        "category_hint": "footwear"
+      },
+      "aliases": [
+        "Sneaker Unstoppable",
+        "Sneaker “Unstoppable”",
+        "Unstoppable Sneakers",
+        "Athletic Shoes",
+        "Performance Sneakers"
+      ]
+    },
+    {
+      "product_id": "product-white-tee",
+      "tenant_id": "testinger",
+      "partner_id": "default-partner",
+      "canonical_description": "White Tee",
+      "category": "t-shirt",
+      "attributes": {
+        "color": "white",
+        "category_hint": "t-shirt"
+      },
+      "aliases": [
+        "T-Shirt White Polarbear",
+        "T-Shirt White “Polarbear”",
+        "Polarbear T-Shirt",
+        "White Tee",
+        "Logo T-Shirt"
+      ]
+    },
+    {
+      "product_id": "product-beige-tee",
+      "tenant_id": "testinger",
+      "partner_id": "default-partner",
+      "canonical_description": "Beige Tee",
+      "category": "t-shirt",
+      "attributes": {
+        "color": "beige",
+        "category_hint": "t-shirt"
+      },
+      "aliases": [
+        "T-Shirt Beige Grizzly",
+        "T-Shirt Beige “Grizzly”",
+        "Grizzly T-Shirt",
+        "Beige Tee",
+        "Logo Tee"
+      ]
+    },
+    {
+      "product_id": "product-casual-shorts",
+      "tenant_id": "testinger",
+      "partner_id": "default-partner",
+      "canonical_description": "Casual Shorts",
+      "category": "shorts",
+      "attributes": {
+        "category_hint": "shorts"
+      },
+      "aliases": [
+        "Shorts El Camino",
+        "Shorts “El Camino”",
+        "El Camino Shorts",
+        "Casual Shorts",
+        "Quick-Dry Shorts"
+      ]
+    },
+    {
+      "product_id": "product-crew-socks",
+      "tenant_id": "testinger",
+      "partner_id": "default-partner",
+      "canonical_description": "Crew Socks",
+      "category": "socks",
+      "attributes": {
+        "category_hint": "socks"
+      },
+      "aliases": [
+        "Socks black",
+        "Socks, black",
+        "Black Socks",
+        "Crew Socks",
+        "Athletic Socks"
+      ]
+    },
+    {
+      "product_id": "product-other-tenant-white-shirt",
+      "tenant_id": "other-tenant",
+      "partner_id": "default-partner",
+      "canonical_description": "Standard White Shirt",
+      "category": "shirt",
+      "attributes": {
+        "color": "white"
+      },
+      "aliases": [
+        "White Tee"
+      ]
+    },
+    {
+      "product_id": "product-other-tenant-steel-kit",
+      "tenant_id": "other-tenant",
+      "partner_id": "default-partner",
+      "canonical_description": "Maintenance Hardware Kit",
+      "category": "maintenance-kit",
+      "attributes": {
+        "category_hint": "maintenance-kit"
+      },
+      "aliases": [
+        "Steel Accessories"
+      ]
+    }
+  ]
+}

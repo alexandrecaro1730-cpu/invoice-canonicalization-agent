@@ -1,0 +1,306 @@
+{
+  "narrative": {
+    "core_tiers": [
+      "Tier 1 - deterministic approved lookup ($0 model cost)",
+      "Tier 2 - bounded retrieval / AI fallback for uncertainty",
+      "Tier 3 - governed human learning that promotes trusted knowledge"
+    ],
+    "delivery_primitives": [
+      "REST",
+      "MCP",
+      "Docker",
+      "CI/CD",
+      "PostgreSQL migration"
+    ]
+  },
+  "document_ingestion_guardrail": {
+    "label": "integration_smoke_test_not_model_accuracy",
+    "parser": "pdf-native-text",
+    "invoice": {
+      "invoice_number": "19283746552",
+      "invoice_date": "2025-07-01",
+      "due_date": "2025-07-16",
+      "payment_terms": "Due in 15 days",
+      "parties": [
+        {
+          "role": "seller",
+          "name": "Testinger GmbH",
+          "contact_name": null,
+          "address_lines": [
+            "123 Test Street",
+            "Testingen, Testern",
+            "0815"
+          ],
+          "phone": "+00 1234 5678 00",
+          "email": "email@testinger.ts",
+          "website": "testinger.ts",
+          "external_id": null
+        },
+        {
+          "role": "bill_to",
+          "name": "Recipient Corp.",
+          "contact_name": "Mr Obertestinger",
+          "address_lines": [
+            "123 Empf\u00e4ngergasse",
+            "0815 Recipstan"
+          ],
+          "phone": "+00 1234 8876 0912",
+          "email": "recip@recipcopr.co",
+          "website": null,
+          "external_id": null
+        },
+        {
+          "role": "ship_to",
+          "name": "Recipient Corp.",
+          "contact_name": "Mr Obertestinger",
+          "address_lines": [
+            "123 Empf\u00e4ngergasse",
+            "0815 Austria"
+          ],
+          "phone": "+00 1234 8876 0912",
+          "email": "recip@recipcopr.co",
+          "website": null,
+          "external_id": null
+        }
+      ],
+      "financials": {
+        "currency": "USD",
+        "subtotal": "280.00",
+        "discount_total": "13.00",
+        "subtotal_after_discount": "267.00",
+        "tax_rate_percent": "20.00",
+        "tax_total": "53.40",
+        "shipping_total": "12.00",
+        "amount_due": "332.40"
+      },
+      "metadata": {}
+    },
+    "extraction_quality": {
+      "status": "PASS",
+      "rows_extracted": 6,
+      "rows_with_complete_arithmetic": 6,
+      "rows_arithmetic_valid": 6,
+      "rows_arithmetic_invalid": 0,
+      "calculated_subtotal": "280.00",
+      "declared_subtotal": "280.00",
+      "subtotal_matches": true,
+      "checks": [
+        "subtotal_matches",
+        "row_arithmetic_pass"
+      ]
+    },
+    "financial_reconciliation": {
+      "status": "PASS",
+      "discount_reconciles": true,
+      "tax_reconciles": true,
+      "amount_due_reconciles": true,
+      "checks": [
+        "discount_reconciles",
+        "tax_reconciles",
+        "amount_due_reconciles"
+      ]
+    },
+    "rows": 6,
+    "exact_aliases": 6,
+    "llm_calls": 0,
+    "canonical_descriptions": [
+      "Highlife Components",
+      "Performance Sneakers",
+      "White Tee",
+      "Beige Tee",
+      "Casual Shorts",
+      "Crew Socks"
+    ]
+  },
+  "challenge": {
+    "label": "integration_smoke_test_not_model_accuracy",
+    "parser": "pdf-native-text",
+    "invoice": {
+      "invoice_number": "19283746552",
+      "invoice_date": "2025-07-01",
+      "due_date": "2025-07-16",
+      "payment_terms": "Due in 15 days",
+      "parties": [
+        {
+          "role": "seller",
+          "name": "Testinger GmbH",
+          "contact_name": null,
+          "address_lines": [
+            "123 Test Street",
+            "Testingen, Testern",
+            "0815"
+          ],
+          "phone": "+00 1234 5678 00",
+          "email": "email@testinger.ts",
+          "website": "testinger.ts",
+          "external_id": null
+        },
+        {
+          "role": "bill_to",
+          "name": "Recipient Corp.",
+          "contact_name": "Mr Obertestinger",
+          "address_lines": [
+            "123 Empf\u00e4ngergasse",
+            "0815 Recipstan"
+          ],
+          "phone": "+00 1234 8876 0912",
+          "email": "recip@recipcopr.co",
+          "website": null,
+          "external_id": null
+        },
+        {
+          "role": "ship_to",
+          "name": "Recipient Corp.",
+          "contact_name": "Mr Obertestinger",
+          "address_lines": [
+            "123 Empf\u00e4ngergasse",
+            "0815 Austria"
+          ],
+          "phone": "+00 1234 8876 0912",
+          "email": "recip@recipcopr.co",
+          "website": null,
+          "external_id": null
+        }
+      ],
+      "financials": {
+        "currency": "USD",
+        "subtotal": "280.00",
+        "discount_total": "13.00",
+        "subtotal_after_discount": "267.00",
+        "tax_rate_percent": "20.00",
+        "tax_total": "53.40",
+        "shipping_total": "12.00",
+        "amount_due": "332.40"
+      },
+      "metadata": {}
+    },
+    "extraction_quality": {
+      "status": "PASS",
+      "rows_extracted": 6,
+      "rows_with_complete_arithmetic": 6,
+      "rows_arithmetic_valid": 6,
+      "rows_arithmetic_invalid": 0,
+      "calculated_subtotal": "280.00",
+      "declared_subtotal": "280.00",
+      "subtotal_matches": true,
+      "checks": [
+        "subtotal_matches",
+        "row_arithmetic_pass"
+      ]
+    },
+    "financial_reconciliation": {
+      "status": "PASS",
+      "discount_reconciles": true,
+      "tax_reconciles": true,
+      "amount_due_reconciles": true,
+      "checks": [
+        "discount_reconciles",
+        "tax_reconciles",
+        "amount_due_reconciles"
+      ]
+    },
+    "rows": 6,
+    "exact_aliases": 6,
+    "llm_calls": 0,
+    "canonical_descriptions": [
+      "Highlife Components",
+      "Performance Sneakers",
+      "White Tee",
+      "Beige Tee",
+      "Casual Shorts",
+      "Crew Socks"
+    ]
+  },
+  "tenant_taxonomy_collision": {
+    "raw_description": "Steel Accessories",
+    "tenant_a": {
+      "tenant_id": "testinger",
+      "canonical_description": "Highlife Components",
+      "decision_kind": "exact_alias"
+    },
+    "tenant_b": {
+      "tenant_id": "other-tenant",
+      "canonical_description": "Maintenance Hardware Kit",
+      "decision_kind": "exact_alias"
+    },
+    "same_raw_text_different_products": true
+  },
+  "tier_2_high_confidence_retrieval": {
+    "input": "Athletic crew socks",
+    "decision_kind": "auto_retrieval",
+    "canonical_description": "Crew Socks",
+    "transaction_blocked": false,
+    "knowledge_review_staged": true,
+    "additional_llm_calls": 0
+  },
+  "high_confidence_retrieval": {
+    "input": "Athletic crew socks",
+    "decision_kind": "auto_retrieval",
+    "canonical_description": "Crew Socks",
+    "transaction_blocked": false,
+    "knowledge_review_staged": true,
+    "additional_llm_calls": 0
+  },
+  "tier_2_novel_product": {
+    "decision_kind": "generated_candidate",
+    "proposal": "Black Leather Jacket",
+    "transaction_blocked": true,
+    "llm_calls_for_first_occurrence": 1,
+    "deduplicated_occurrences": 26,
+    "additional_llm_calls_for_repeats": 0
+  },
+  "novel_product": {
+    "decision_kind": "generated_candidate",
+    "proposal": "Black Leather Jacket",
+    "transaction_blocked": true,
+    "llm_calls_for_first_occurrence": 1,
+    "deduplicated_occurrences": 26,
+    "additional_llm_calls_for_repeats": 0
+  },
+  "tier_3_human_learning": {
+    "approved_product_id": "product-3ad4e524-8bf1-462e-8ec8-a081b2e181d8",
+    "approved_description": "Black Leather Jacket",
+    "next_decision_kind": "exact_alias",
+    "next_canonical_description": "Black Leather Jacket",
+    "additional_llm_calls_after_approval": 0
+  },
+  "human_learning": {
+    "approved_product_id": "product-3ad4e524-8bf1-462e-8ec8-a081b2e181d8",
+    "approved_description": "Black Leather Jacket",
+    "next_decision_kind": "exact_alias",
+    "next_canonical_description": "Black Leather Jacket",
+    "additional_llm_calls_after_approval": 0
+  },
+  "declining_cost_curve": {
+    "interpretation": "Model spend scales with unique unresolved concepts, not repeated invoice volume. After human approval, future occurrences use the exact-alias path.",
+    "metric": "normalized model calls per 1,000 repeated occurrences of one unique unknown",
+    "points": [
+      {
+        "occurrences_of_same_unique_unknown": 1,
+        "maximum_model_proposals_while_pending": 1,
+        "normalized_model_calls_per_1000_occurrences": 1000.0
+      },
+      {
+        "occurrences_of_same_unique_unknown": 10,
+        "maximum_model_proposals_while_pending": 1,
+        "normalized_model_calls_per_1000_occurrences": 100.0
+      },
+      {
+        "occurrences_of_same_unique_unknown": 100,
+        "maximum_model_proposals_while_pending": 1,
+        "normalized_model_calls_per_1000_occurrences": 10.0
+      },
+      {
+        "occurrences_of_same_unique_unknown": 1000,
+        "maximum_model_proposals_while_pending": 1,
+        "normalized_model_calls_per_1000_occurrences": 1.0
+      },
+      {
+        "occurrences_of_same_unique_unknown": 10000,
+        "maximum_model_proposals_while_pending": 1,
+        "normalized_model_calls_per_1000_occurrences": 0.1
+      }
+    ],
+    "provider_dollar_cost_claimed": false
+  }
+}

@@ -1,0 +1,28 @@
+# Business objective: create traceable immutable releases only after the same locked toolchain used by CI is available.
+# Technical description: tags install exact CI pins, re-run the production gate with static analysis required, build package/container artifacts, and upload the wheel; registry publication remains organization-specific.
+name: Release
+on:
+  push:
+    tags: ["v*"]
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements-dev.lock
+      - run: python -m pip install -e . --no-deps
+      - name: Re-run production gate
+        env:
+          REQUIRE_STATIC_TOOLS: "1"
+        run: make assess
+      - run: python -m build
+      - run: docker build -t invoice-canonicalizer:${{ github.ref_name }} .
+      - uses: actions/upload-artifact@v4
+        with:
+          name: release-artifacts
+          path: dist/

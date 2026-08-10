@@ -1,0 +1,21 @@
+{
+  "business_objective": "Define tenant-specific naming conventions used only for new human-review candidates.",
+  "technical_description": "Rules are serialized into the constrained prompt and never override approved aliases.",
+  "default": {
+    "case": "title",
+    "maximum_words": 5,
+    "remove_marketing_names": true,
+    "retain_explicit_color": true,
+    "retain_explicit_material": true,
+    "avoid_unverified_brand": true
+  },
+  "testinger": {
+    "case": "title",
+    "maximum_words": 4,
+    "remove_marketing_names": true,
+    "retain_explicit_color": true,
+    "retain_explicit_material": true,
+    "prefer_common_product_noun": true,
+    "avoid_unverified_brand": true
+  }
+}

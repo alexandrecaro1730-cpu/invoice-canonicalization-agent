@@ -1,0 +1,18 @@
+# Business objective: reproduce the exact runtime dependency graph validated for this delivery.
+# Technical description: exact pins are installed before the application wheel so container/runtime transitive versions cannot drift.
+annotated-doc==0.0.4
+annotated-types==0.7.0
+anyio==4.13.0
+click==8.1.8
+fastapi==0.128.2
+h11==0.16.0
+idna==3.17
+pydantic==2.13.4
+pydantic_core==2.46.4
+pypdf==5.9.0
+python-multipart==0.0.29
+PyYAML==6.0.3
+starlette==0.50.0
+typing_extensions==4.15.0
+typing-inspection==0.4.2
+uvicorn==0.48.0

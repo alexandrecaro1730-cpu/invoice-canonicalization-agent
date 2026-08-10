@@ -1,0 +1,55 @@
+# Business objective: make the production processing order and component ownership machine-checkable.
+# Technical description: quality gates validate request scope, deterministic extraction, arithmetic validation, bounded fallback, canonicalization, human governance, promotion, and audit stages.
+workflow_order:
+  - authentication_and_tenant_binding
+  - file_validation
+  - deterministic_document_parsing
+  - extraction_quality_gate
+  - model_extraction_fallback
+  - invoice_context_persistence
+  - text_normalization
+  - cache_precheck
+  - approved_alias_lookup
+  - pending_candidate_deduplication
+  - approved_only_hybrid_retrieval
+  - policy_scoring_and_routing
+  - bounded_generation
+  - output_validation
+  - staged_review_queue
+  - human_review_action
+  - approved_knowledge_promotion
+  - audit_and_metrics
+components:
+  authentication_and_tenant_binding: src/invoice_canonicalizer/security/auth.py
+  file_validation: src/invoice_canonicalizer/security/file_validation.py
+  deterministic_document_parsing: src/invoice_canonicalizer/application/ingestion.py
+  extraction_quality_gate: src/invoice_canonicalizer/infrastructure/documents/extraction_quality.py
+  model_extraction_fallback: src/invoice_canonicalizer/infrastructure/documents/model_extractor.py
+  invoice_context_persistence: src/invoice_canonicalizer/infrastructure/db/sqlite_repository.py
+  text_normalization: src/invoice_canonicalizer/utils/text.py
+  cache_precheck: src/invoice_canonicalizer/application/canonicalization.py
+  approved_alias_lookup: src/invoice_canonicalizer/infrastructure/db/sqlite_repository.py
+  pending_candidate_deduplication: src/invoice_canonicalizer/infrastructure/db/sqlite_repository.py
+  approved_only_hybrid_retrieval: src/invoice_canonicalizer/infrastructure/retrieval/hybrid.py
+  policy_scoring_and_routing: src/invoice_canonicalizer/application/review_scoring.py
+  bounded_generation: src/invoice_canonicalizer/application/canonicalization.py
+  output_validation: src/invoice_canonicalizer/security/input_guard.py
+  staged_review_queue: src/invoice_canonicalizer/application/review_queue.py
+  human_review_action: src/invoice_canonicalizer/application/reviews.py
+  approved_knowledge_promotion: src/invoice_canonicalizer/infrastructure/db/sqlite_repository.py
+  audit_and_metrics: src/invoice_canonicalizer/observability/metrics.py
+entrypoints:
+  cli: src/invoice_canonicalizer/cli.py
+  api: src/invoice_canonicalizer/api/app.py
+  mcp: src/invoice_canonicalizer/mcp/server.py
+quality_evidence:
+  tests: tests
+  evaluation_cases: evals/cases/canonicalization_cases.jsonl
+  example_inputs: data/examples/input
+  expected_example_outputs: data/examples/expected/challenge_expected.json
+  source_assessment_reference: data/reference/Challenge_Data_Scientist.pdf
+  prompts: prompts
+  review_queue_contract: src/invoice_canonicalizer/infrastructure/review_queue/csv_queue.py
+  dependency_lock: requirements-dev.lock
+  interview_demo: scripts/interview_demo.py
+  reports: reports

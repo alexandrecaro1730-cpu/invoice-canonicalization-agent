@@ -1,0 +1,21 @@
+{
+  "business_objective": "Provide deterministic manual examples for the model-based document extraction fallback.",
+  "technical_description": "Each response is selected by a literal marker in minimized invoice text and returns the same strict line-item JSON contract expected from a live provider.",
+  "responses": [
+    {
+      "contains": "Purchased item: Midnight jacket",
+      "result": {
+        "lines": [
+          {
+            "description": "Black Leather Jacket Midnight",
+            "quantity": "2",
+            "unit_price": "50.00",
+            "total": "100.00"
+          }
+        ],
+        "declared_subtotal": "100.00",
+        "rationale": "The unstructured purchase block explicitly states one jacket line and its arithmetic."
+      }
+    }
+  ]
+}

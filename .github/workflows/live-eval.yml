@@ -1,0 +1,26 @@
+# Business objective: evaluate an approved external model without spending money on every pull request.
+# Technical description: a manual workflow installs exact CI pins, injects approved credentials/pricing, and runs only the opt-in live provider contract smoke test.
+name: Live model evaluation
+on:
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  live-eval:
+    runs-on: ubuntu-latest
+    environment: live-model-evaluation
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python -m pip install -r requirements-dev.lock
+      - run: python -m pip install -e . --no-deps
+      - name: Run live provider smoke test
+        env:
+          ICA_PROVIDER: openai-compatible
+          ICA_MODEL: ${{ vars.APPROVED_MODEL }}
+          ICA_MODEL_INPUT_COST_PER_MILLION: ${{ vars.INPUT_COST_PER_MILLION }}
+          ICA_MODEL_OUTPUT_COST_PER_MILLION: ${{ vars.OUTPUT_COST_PER_MILLION }}
+          OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
+        run: python scripts/live_provider_smoke.py

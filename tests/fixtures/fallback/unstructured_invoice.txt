@@ -1,0 +1,9 @@
+BUSINESS OBJECTIVE: exercise the bounded AI extraction fallback with a line that the deterministic table parser intentionally cannot recognize.
+TECHNICAL DESCRIPTION: the values are explicit but expressed as prose; the stored manual model fixture must recover them and pass arithmetic validation.
+INVOICE 90001
+Purchased item: Midnight jacket
+Product wording: Black Leather Jacket Midnight
+Quantity ordered = 2
+Unit price = 50.00
+Line amount = 100.00
+Subtotal due = 100.00

@@ -1,0 +1,44 @@
+# Business objective: define safe offline defaults for the assessment and local development.
+# Technical description: configures storage, disabled local auth, fixture model routing, retrieval, Decimal cost, document fallback, and observability controls.
+storage:
+  database_path: .runtime/catalog.db
+  seed_catalog: data/seed/catalog.json
+  client_styles: data/seed/client_styles.json
+prompts:
+  directory: prompts
+auth:
+  mode: disabled
+  api_keys_env: ICA_API_KEYS_JSON
+model:
+  provider: fixture
+  model: fixture-canonicalizer-v1
+  base_url: https://api.openai.com
+  api_key_env: OPENAI_API_KEY
+  input_cost_per_million: "0"
+  output_cost_per_million: "0"
+  max_output_tokens: 350
+  timeout_seconds: 30
+  max_retries: 2
+  retry_backoff_seconds: 0.25
+taxonomy:
+  version: 2026.08.1
+retrieval:
+  top_k: 5
+  proposal_threshold: 0.60
+  margin_threshold: 0.08
+  auto_resolve_threshold: 0.92
+  auto_margin_threshold: 0.08
+  semantic:
+    enabled: false
+    weight: 0.20
+security:
+  max_file_size_bytes: 10000000
+cost:
+  max_model_calls_per_document: 25
+  max_cost_usd_per_document: "0.25"
+documents:
+  enable_ocr_fallback: false
+  enable_model_extraction_fallback: true
+  max_extraction_prompt_chars: 12000
+observability:
+  log_level: INFO

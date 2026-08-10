@@ -1,0 +1,36 @@
+# Business objective: block merges that regress correctness, documentation, security, reproducibility, static quality, or packaging.
+# Technical description: installs exact CI pins, requires Ruff/mypy, runs the offline production gate, uploads sanitized evidence, and independently builds/smokes the hardened container.
+name: CI
+on:
+  pull_request:
+  push:
+    branches: [main]
+permissions:
+  contents: read
+jobs:
+  quality:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - run: python -m pip install --upgrade pip
+      - run: python -m pip install -r requirements-dev.lock
+      - run: python -m pip install -e . --no-deps
+      - name: Production quality gate
+        env:
+          REQUIRE_STATIC_TOOLS: "1"
+        run: make assess
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: quality-reports
+          path: reports/
+  container:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - run: docker build -t invoice-canonicalizer:${{ github.sha }} .
+      - run: docker run --rm --entrypoint python invoice-canonicalizer:${{ github.sha }} -c "import invoice_canonicalizer; print(invoice_canonicalizer.__version__)"

@@ -1,0 +1,57 @@
+{
+  "business_objective": "Define the full integration smoke-test contract for the supplied invoice: document facts must be retained and approved product mappings must replay deterministically.",
+  "technical_description": "This is not an ML-accuracy benchmark. Header/party/financial values are source-derived expectations; canonical mappings are deliberately pre-approved aliases.",
+  "invoice": {
+    "invoice_number": "19283746552",
+    "invoice_date": "2025-07-01",
+    "due_date": "2025-07-16",
+    "payment_terms": "Due in 15 days",
+    "parties": [
+      {
+        "role": "seller",
+        "name": "Testinger GmbH",
+        "contact_name": null,
+        "address_lines": ["123 Test Street", "Testingen, Testern", "0815"],
+        "phone": "+00 1234 5678 00",
+        "email": "email@testinger.ts",
+        "website": "testinger.ts"
+      },
+      {
+        "role": "bill_to",
+        "name": "Recipient Corp.",
+        "contact_name": "Mr Obertestinger",
+        "address_lines": ["123 Empfängergasse", "0815 Recipstan"],
+        "phone": "+00 1234 8876 0912",
+        "email": "recip@recipcopr.co",
+        "website": null
+      },
+      {
+        "role": "ship_to",
+        "name": "Recipient Corp.",
+        "contact_name": "Mr Obertestinger",
+        "address_lines": ["123 Empfängergasse", "0815 Austria"],
+        "phone": "+00 1234 8876 0912",
+        "email": "recip@recipcopr.co",
+        "website": null
+      }
+    ],
+    "financials": {
+      "currency": "USD",
+      "subtotal": "280.00",
+      "discount_total": "13.00",
+      "subtotal_after_discount": "267.00",
+      "tax_rate_percent": "20.00",
+      "tax_total": "53.40",
+      "shipping_total": "12.00",
+      "amount_due": "332.40"
+    }
+  },
+  "mappings": [
+    {"input": "Highlife Steel Accessories", "product_id": "product-highlife-components", "canonical_description": "Highlife Components"},
+    {"input": "Sneaker “Unstoppable”", "product_id": "product-performance-sneakers", "canonical_description": "Performance Sneakers"},
+    {"input": "T-Shirt White “Polarbear”", "product_id": "product-white-tee", "canonical_description": "White Tee"},
+    {"input": "T-Shirt Beige “Grizzly”", "product_id": "product-beige-tee", "canonical_description": "Beige Tee"},
+    {"input": "Shorts “El Camino”", "product_id": "product-casual-shorts", "canonical_description": "Casual Shorts"},
+    {"input": "Socks, black", "product_id": "product-crew-socks", "canonical_description": "Crew Socks"}
+  ]
+}
