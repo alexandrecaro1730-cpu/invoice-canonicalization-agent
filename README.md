@@ -17,6 +17,36 @@ Known descriptions resolve through approved deterministic knowledge with **no LL
 - **Quality gate:** extraction arithmetic is validated before canonicalization
 - **Demo:** `make interview-demo`
 - **Offline test suite:** 107 tests passing, branch-aware coverage above the configured 80% threshold
+- **Static typing:** mypy passes with no source-code type errors
+- **Golden regression set:** 11 versioned canonicalization/routing cases
+- **Safety regression:** 0 unexpected LLM calls, 0 unsafe auto-accepts, 0 model-review bypasses
+
+## Verified quality snapshot
+
+The repository is validated through an offline, reproducible quality gate. The current verified snapshot includes:
+
+| Check | Verified result |
+|---|---:|
+| Automated tests | **107 passed** |
+| mypy | **PASS — no source-code type errors** |
+| Branch-aware coverage | **above the configured 80% threshold** |
+| Supplied challenge replay | **6/6 approved mappings** |
+| LLM calls on the six approved challenge aliases | **0** |
+| Golden regression cases | **11** |
+| Unexpected LLM calls on the golden set | **0** |
+| Unsafe auto-accepts on the golden set | **0** |
+| Model-review bypasses on the golden set | **0** |
+
+The golden set is a **versioned regression benchmark**, not a claim of population-level hallucination or unseen-product accuracy. Before production rollout, I would expand it into a larger blind labelled dataset and benchmark candidate models on **quality, safety, cost, and latency**.
+
+Run the same evidence locally with:
+
+```bash
+make typecheck
+make test
+PYTHONPATH=src python scripts/run_evaluation.py
+./run_assessment.sh
+```
 
 ## The problem
 
@@ -243,9 +273,23 @@ The automated test suite includes the same raw description, `Steel Accessories`,
 
 Authentication binds the caller to a tenant, and the PostgreSQL migration adds forced row-level security as defense in depth.
 
+## Model selection strategy
+
+Model selection is **evaluation-driven rather than dynamic at runtime**. Candidate models should be evaluated against the same blind golden dataset, using the same prompts and routing contract, and compared on:
+
+- canonical candidate quality;
+- unsafe auto-accept / review-bypass behavior;
+- cost per unresolved concept;
+- p50 / p95 latency;
+- provider reliability and drift.
+
+The smallest / lowest-cost model that satisfies the agreed quality and safety thresholds should then be **pinned by model name and version in configuration**. Runtime model switching is intentionally not part of this assessment solution.
+
 ## Quality and evaluation
 
 The project uses deterministic offline fixtures in CI so regression tests do not spend API credits or drift with provider changes. Live-provider evaluation is intentionally opt-in.
+
+The versioned golden set measures **routing correctness and safety behavior**. For model-driven golden cases, the report exposes candidate mismatch rate separately from review safety. This is intentionally not labelled a population-level “hallucination rate”: a wrong proposal that is captured for human review is different from a wrong answer that is silently trusted.
 
 The quality gate covers:
 

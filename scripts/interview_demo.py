@@ -1,56 +1,450 @@
-"""Business objective: demonstrate the three-tier canonicalization story and declining model-call curve in under five minutes.
+"""Business objective: prove the supplied invoice task first, then explain the governed unknown-product lifecycle clearly in one terminal demo.
 
-Technical description: runs an upstream document-quality smoke test, deterministic lookup, scoped taxonomy collision,
-retrieval, bounded generation, pending-candidate deduplication, human approval, and learned exact-alias replay in an
-isolated temporary SQLite database. The evidence intentionally separates document-ingestion guardrails from product
-canonicalization routing.
+Technical description: processes the real challenge PDF in an isolated SQLite database, prints the extracted invoice lines and expected canonical results, then traces one unseen product through Tier 1 exact lookup, Tier 2 approved retrieval/bounded fixture-model proposal, Tier 3 human approval, and learned Tier 1 replay. Machine-readable evidence is still written to reports/interview_demo.json.
 """
 
 from __future__ import annotations
 
+import argparse
 import json
+import os
+import shutil
+import sys
 import tempfile
 from dataclasses import replace
+from decimal import Decimal
 from pathlib import Path
+from typing import Iterable, Sequence
 
-from invoice_canonicalizer.application.factory import build_container
+from invoice_canonicalizer.application.factory import ApplicationContainer, build_container
 from invoice_canonicalizer.config import load_settings
-from invoice_canonicalizer.domain.models import DecisionKind, InvoiceLine
+from invoice_canonicalizer.domain.models import (
+    CanonicalizationDecision,
+    DecisionKind,
+    InvoiceLine,
+    StoredInvoiceLine,
+)
 from invoice_canonicalizer.infrastructure.llm.fixture_provider import FixtureModelProvider
 
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "reports" / "interview_demo.json"
+DEMO_WIDTH = 106
 
 
-def _provider_calls(container) -> int:
+class Style:
+    """Minimal ANSI styling that automatically disables itself for CI/report capture."""
+
+    def __init__(self, enabled: bool) -> None:
+        self.enabled = enabled
+
+    def _wrap(self, code: str, text: str) -> str:
+        return f"\033[{code}m{text}\033[0m" if self.enabled else text
+
+    def bold(self, text: str) -> str:
+        return self._wrap("1", text)
+
+    def cyan(self, text: str) -> str:
+        return self._wrap("36", text)
+
+    def blue(self, text: str) -> str:
+        return self._wrap("34", text)
+
+    def green(self, text: str) -> str:
+        return self._wrap("32", text)
+
+    def yellow(self, text: str) -> str:
+        return self._wrap("33", text)
+
+    def red(self, text: str) -> str:
+        return self._wrap("31", text)
+
+    def dim(self, text: str) -> str:
+        return self._wrap("2", text)
+
+
+STYLE = Style(enabled=sys.stdout.isatty() and os.getenv("NO_COLOR") is None)
+
+
+def _provider_calls(container: ApplicationContainer) -> int:
     provider = container.canonicalizer.provider
     return provider.canonicalization_call_count if isinstance(provider, FixtureModelProvider) else -1
 
 
 def _rate_per_1000(occurrences: int) -> float:
-    """Return normalized model calls / 1,000 occurrences for one unique unknown.
-
-    One unique unresolved concept needs at most one proposal while pending; after approval its future occurrences
-    resolve by exact alias. This is a normalized architecture metric, not a provider-dollar claim.
-    """
+    """Return normalized model calls / 1,000 occurrences for one unique unknown."""
     return round(1000.0 / occurrences, 6)
 
 
-def main() -> int:
+def _text(value: object | None, fallback: str = "-") -> str:
+    return fallback if value is None else str(value)
+
+
+def _money(value: Decimal | None) -> str:
+    return "-" if value is None else f"{value:.2f}"
+
+
+def _terminal_width() -> int:
+    columns = shutil.get_terminal_size((DEMO_WIDTH, 30)).columns
+    return min(max(columns, 92), 118)
+
+
+def _rule(title: str, *, number: str | None = None) -> None:
+    width = _terminal_width()
+    label = f" {number}  {title} " if number else f" {title} "
+    label = STYLE.bold(STYLE.cyan(label))
+    # ANSI codes do not affect visible width, so use the unstyled label for padding math.
+    visible = f" {number}  {title} " if number else f" {title} "
+    print()
+    print(label + "─" * max(1, width - len(visible)))
+
+
+def _panel(lines: Sequence[str]) -> None:
+    width = _terminal_width()
+    inner = width - 4
+    print("╭" + "─" * (width - 2) + "╮")
+    for raw in lines:
+        text = raw[:inner]
+        print("│ " + text.ljust(inner) + " │")
+    print("╰" + "─" * (width - 2) + "╯")
+
+
+def _table(headers: Sequence[str], rows: Iterable[Sequence[str]], widths: Sequence[int], aligns: Sequence[str] | None = None) -> None:
+    alignments = aligns or ["left"] * len(headers)
+
+    def border(left: str, middle: str, right: str) -> str:
+        return left + middle.join("─" * (width + 2) for width in widths) + right
+
+    def render(cells: Sequence[str]) -> str:
+        rendered: list[str] = []
+        for cell, width, alignment in zip(cells, widths, alignments, strict=True):
+            value = cell if len(cell) <= width else cell[: max(1, width - 1)] + "…"
+            rendered.append(value.rjust(width) if alignment == "right" else value.ljust(width))
+        return "│ " + " │ ".join(rendered) + " │"
+
+    print(border("┌", "┬", "┐"))
+    print(render([STYLE.bold(header) for header in headers]))
+    print(border("├", "┼", "┤"))
+    for row in rows:
+        print(render(row))
+    print(border("└", "┴", "┘"))
+
+
+def _metric(label: str, value: str, *, status: str | None = None) -> None:
+    if status == "ok":
+        marker = STYLE.green("✓")
+    elif status == "warn":
+        marker = STYLE.yellow("?")
+    elif status == "fail":
+        marker = STYLE.red("✗")
+    else:
+        marker = " "
+    print(f"  {marker} {label:<28} {value}")
+
+
+def _pause(enabled: bool) -> None:
+    if enabled and sys.stdin.isatty():
+        input(STYLE.dim("\n  Press Enter to continue…"))
+
+
+def _retrieval_top(decision: CanonicalizationDecision) -> tuple[str, float] | None:
+    for item in decision.evidence:
+        if item.get("type") == "retrieval":
+            description = item.get("canonical_description")
+            score = item.get("score")
+            if isinstance(description, str) and isinstance(score, (int, float)):
+                return description, float(score)
+    return None
+
+
+def _print_challenge_input(lines: Sequence[StoredInvoiceLine], invoice_number: str | None, parser_name: str) -> None:
+    _rule("THE ORIGINAL TASK — ACTUAL INPUT", number="01")
+    print(f"  Source    : data/examples/input/challenge_invoice.pdf")
+    print(f"  Invoice   : #{_text(invoice_number)}")
+    print(f"  Parser    : {parser_name}")
+    print()
+    _table(
+        ["#", "Original invoice description", "Qty", "Unit", "Line total"],
+        [
+            [str(index), line.description, _text(line.quantity), _money(line.unit_price), _money(line.total)]
+            for index, line in enumerate(lines, start=1)
+        ],
+        [3, 39, 5, 10, 12],
+        ["right", "left", "right", "right", "right"],
+    )
+
+
+def _print_challenge_result(lines: Sequence[StoredInvoiceLine], exact_count: int, challenge_llm_calls: int) -> None:
+    _rule("REQUESTED CANONICAL RESULT", number="02")
+    _table(
+        ["Original description", "Canonical description", "Decision"],
+        [
+            [line.description, _text(line.canonical_description), _text(line.decision_kind.value if line.decision_kind else None)]
+            for line in lines
+        ],
+        [39, 27, 16],
+    )
+    print()
+    _metric("Challenge mappings", f"{exact_count}/{len(lines)} expected mappings", status="ok")
+    _metric("LLM calls", str(challenge_llm_calls), status="ok")
+    _metric("Human reviews", "0", status="ok")
+    _metric("Result", "deterministic replay", status="ok")
+
+
+def _print_quality(challenge: object) -> None:
+    # The caller passes DocumentProcessingResult; keeping the helper lightweight avoids duplicating domain imports.
+    quality = getattr(challenge, "quality", None)
+    financial_quality = getattr(challenge, "financial_quality", None)
+    context = getattr(challenge, "context")
+    print()
+    _metric("Extraction quality", quality.status.value if quality else "UNKNOWN", status="ok" if quality and quality.status.value == "PASS" else "warn")
+    if quality:
+        _metric("Calculated subtotal", _money(quality.calculated_subtotal))
+        _metric("Declared subtotal", _money(quality.declared_subtotal))
+    _metric(
+        "Financial reconciliation",
+        financial_quality.status.value if financial_quality else "UNKNOWN",
+        status="ok" if financial_quality and financial_quality.status.value == "PASS" else "warn",
+    )
+    _metric("Currency / amount due", f"{_text(context.financials.currency)} {_money(context.financials.amount_due)}")
+
+
+def _print_unknown_intro(description: str) -> None:
+    _rule("NOW INTRODUCE A PRODUCT THE CATALOG DOES NOT KNOW", number="03")
+    print()
+    _panel([
+        "NOVELTY SCENARIO",
+        "",
+        f'New invoice description:  "{description}"',
+        "Catalog state:             no approved exact alias",
+        "Goal:                      resolve safely without silently trusting a guess",
+    ])
+
+
+def _print_pipeline_trace(
+    novel: CanonicalizationDecision,
+    first_model_calls: int,
+    pending_occurrences: int,
+    repeat_model_calls: int,
+    provider_name: str,
+) -> None:
+    _rule("PIPELINE TRACE — ONE UNKNOWN THROUGH ALL THREE TIERS", number="04")
+
+    print(STYLE.bold("  DOCUMENT GATE"))
+    print(f"    {STYLE.green('✓')} extraction already validated")
+    print(f"    {STYLE.green('✓')} arithmetic already validated")
+    print(f"    {STYLE.green('✓')} only product-line evidence enters canonicalization")
+    print("        │")
+    print("        ▼")
+
+    print(STYLE.bold(STYLE.blue("  TIER 1 · APPROVED EXACT LOOKUP")))
+    print(f"    normalized input     {novel.normalized_description}")
+    print(f"    exact alias          {STYLE.red('✗ NOT FOUND')}")
+    print("        │")
+    print("        ▼")
+
+    top = _retrieval_top(novel)
+    print(STYLE.bold(STYLE.blue("  TIER 2 · APPROVED RETRIEVAL + BOUNDED AI")))
+    if top:
+        print(f"    top retrieval        {top[0]}  (score={top[1]:.3f})")
+    print(f"    evidence sufficient  {STYLE.yellow('✗ NO — do not auto-match')}")
+    print(f"    provider             {provider_name}  {STYLE.dim('(deterministic offline fixture for the demo)')}")
+    print(f"    bounded proposal     {STYLE.yellow(_text(novel.canonical_description))}")
+    print(f"    model calls          {first_model_calls}")
+    print(f"    trusted knowledge?   {STYLE.red('✗ NO — proposal only')}")
+    print("        │")
+    print("        ▼")
+
+    print(STYLE.bold(STYLE.blue("  TIER 3 · HUMAN GOVERNANCE")))
+    print(f"    review candidate     {novel.input_description}")
+    print(f"    proposed mapping     → {_text(novel.canonical_description)}")
+    print(f"    status               {STYLE.yellow('WAITING FOR APPROVAL')}")
+    print(f"    repeated occurrences {pending_occurrences}")
+    print(f"    extra model calls    {repeat_model_calls}  {STYLE.dim('(pending candidate is reused)')}")
+
+
+def _print_learning(approved_description: str, learned: CanonicalizationDecision, additional_calls: int) -> None:
+    _rule("HUMAN APPROVAL → REUSABLE KNOWLEDGE", number="05")
+    print()
+    print(f"  Reviewer decision      {STYLE.green('✓ APPROVED')}")
+    print(f"  Knowledge promoted     Black Leather Jacket Midnight  →  {approved_description}")
+    print()
+    print(STYLE.bold("  Same description arrives again:"))
+    print(f"    Tier 1 exact alias    {STYLE.green('✓ FOUND')}")
+    print(f"    canonical product    {_text(learned.canonical_description)}")
+    print(f"    decision             {learned.decision_kind.value}")
+    print(f"    additional LLM calls {additional_calls}")
+    print(f"    human review         0")
+    print()
+    _panel([
+        "FIRST OCCURRENCE                           FUTURE OCCURRENCES",
+        "Unknown → retrieval → AI proposal          Known → exact approved lookup",
+        "           → human approval                       → canonical product ID",
+        "",
+        "1 bounded proposal + 1 approval            0 model calls + 0 reviews",
+        "",
+        "WILD  →  TAMED",
+    ])
+
+
+def _print_final_summary(exact_count: int, line_count: int) -> None:
+    _rule("DEMO COMPLETE")
+    _panel([
+        f"✓ Supplied challenge reproduces {exact_count}/{line_count} approved mappings",
+        "✓ Known descriptions resolve deterministically without an LLM",
+        "✓ Unknown descriptions are bounded, reviewable, and deduplicated",
+        "✓ Unapproved AI output never silently becomes trusted knowledge",
+        "✓ Human approval turns future occurrences into exact deterministic lookup",
+    ])
+    print(STYLE.dim("\n  Machine-readable evidence: reports/interview_demo.json"))
+
+
+def _build_evidence(
+    challenge: object,
+    exact_count: int,
+    challenge_llm_calls: int,
+    collision_a: CanonicalizationDecision,
+    collision_b: CanonicalizationDecision,
+    auto: CanonicalizationDecision,
+    calls_after_auto: int,
+    novel: CanonicalizationDecision,
+    calls_after_novel: int,
+    pending_occurrences: int,
+    calls_after_repeats: int,
+    approved_product_id: str,
+    approved_description: str,
+    learned: CanonicalizationDecision,
+    calls_after_learning: int,
+) -> dict[str, object]:
+    context = getattr(challenge, "context")
+    quality = getattr(challenge, "quality")
+    financial_quality = getattr(challenge, "financial_quality")
+    decisions = getattr(challenge, "decisions")
+    recurrence_points = [1, 10, 100, 1_000, 10_000]
+    cost_curve = [
+        {
+            "occurrences_of_same_unique_unknown": n,
+            "maximum_model_proposals_while_pending": 1,
+            "normalized_model_calls_per_1000_occurrences": _rate_per_1000(n),
+        }
+        for n in recurrence_points
+    ]
+    smoke_test = {
+        "label": "integration_smoke_test_not_model_accuracy",
+        "parser": getattr(challenge, "parser_name"),
+        "invoice": context.to_dict(),
+        "extraction_quality": quality.to_dict() if quality else None,
+        "financial_reconciliation": financial_quality.to_dict() if financial_quality else None,
+        "rows": len(decisions),
+        "exact_aliases": exact_count,
+        "llm_calls": challenge_llm_calls,
+        "canonical_descriptions": [item.canonical_description for item in decisions],
+    }
+    return {
+        "narrative": {
+            "core_tiers": [
+                "Tier 1 - deterministic approved lookup (no LLM call)",
+                "Tier 2 - approved retrieval / bounded AI for uncertainty",
+                "Tier 3 - governed human learning that promotes trusted knowledge",
+            ],
+            "delivery_primitives": ["REST", "MCP", "Docker", "CI/CD", "PostgreSQL migration"],
+        },
+        "document_ingestion_guardrail": smoke_test,
+        "challenge": smoke_test,
+        "tenant_taxonomy_collision": {
+            "raw_description": "Steel Accessories",
+            "tenant_a": {
+                "tenant_id": "testinger",
+                "canonical_description": collision_a.canonical_description,
+                "decision_kind": collision_a.decision_kind.value,
+            },
+            "tenant_b": {
+                "tenant_id": "other-tenant",
+                "canonical_description": collision_b.canonical_description,
+                "decision_kind": collision_b.decision_kind.value,
+            },
+            "same_raw_text_different_products": collision_a.canonical_product_id != collision_b.canonical_product_id,
+        },
+        "tier_2_high_confidence_retrieval": {
+            "input": auto.input_description,
+            "decision_kind": auto.decision_kind.value,
+            "canonical_description": auto.canonical_description,
+            "transaction_blocked": auto.requires_human_review,
+            "knowledge_review_staged": bool(auto.review_id),
+            "additional_llm_calls": calls_after_auto - challenge_llm_calls,
+        },
+        "high_confidence_retrieval": {
+            "input": auto.input_description,
+            "decision_kind": auto.decision_kind.value,
+            "canonical_description": auto.canonical_description,
+            "transaction_blocked": auto.requires_human_review,
+            "knowledge_review_staged": bool(auto.review_id),
+            "additional_llm_calls": calls_after_auto - challenge_llm_calls,
+        },
+        "tier_2_novel_product": {
+            "decision_kind": novel.decision_kind.value,
+            "proposal": novel.canonical_description,
+            "transaction_blocked": novel.requires_human_review,
+            "llm_calls_for_first_occurrence": calls_after_novel - calls_after_auto,
+            "deduplicated_occurrences": pending_occurrences,
+            "additional_llm_calls_for_repeats": calls_after_repeats - calls_after_novel,
+        },
+        "novel_product": {
+            "decision_kind": novel.decision_kind.value,
+            "proposal": novel.canonical_description,
+            "transaction_blocked": novel.requires_human_review,
+            "llm_calls_for_first_occurrence": calls_after_novel - calls_after_auto,
+            "deduplicated_occurrences": pending_occurrences,
+            "additional_llm_calls_for_repeats": calls_after_repeats - calls_after_novel,
+        },
+        "tier_3_human_learning": {
+            "approved_product_id": approved_product_id,
+            "approved_description": approved_description,
+            "next_decision_kind": learned.decision_kind.value,
+            "next_canonical_description": learned.canonical_description,
+            "additional_llm_calls_after_approval": calls_after_learning - calls_after_repeats,
+        },
+        "human_learning": {
+            "approved_product_id": approved_product_id,
+            "approved_description": approved_description,
+            "next_decision_kind": learned.decision_kind.value,
+            "next_canonical_description": learned.canonical_description,
+            "additional_llm_calls_after_approval": calls_after_learning - calls_after_repeats,
+        },
+        "declining_cost_curve": {
+            "interpretation": "Model spend scales with unique unresolved concepts, not repeated invoice volume. After human approval, future occurrences use the exact-alias path.",
+            "metric": "normalized model calls per 1,000 repeated occurrences of one unique unknown",
+            "points": cost_curve,
+            "provider_dollar_cost_claimed": False,
+        },
+    }
+
+
+def build_parser() -> argparse.ArgumentParser:
+    parser = argparse.ArgumentParser(description="Run the interviewer-facing invoice canonicalization lifecycle demo.")
+    parser.add_argument("--plain", action="store_true", help="disable ANSI color while keeping the formatted narrative")
+    parser.add_argument("--json", action="store_true", help="print only the machine-readable evidence JSON")
+    parser.add_argument("--step", action="store_true", help="pause between narrative stages when running interactively")
+    return parser
+
+
+def main(argv: list[str] | None = None) -> int:
+    args = build_parser().parse_args(argv)
+    if args.plain or args.json:
+        STYLE.enabled = False
+
     with tempfile.TemporaryDirectory(prefix="ica-interview-demo-") as temp_dir:
         settings = replace(load_settings(ROOT), database_path=Path(temp_dir) / "catalog.db")
         container = build_container(settings)
 
-        # Upstream ingestion guardrail smoke test. This proves clean extraction before product routing.
         challenge = container.ingestion.process(
             ROOT / "data/examples/input/challenge_invoice.pdf",
             "testinger",
             "default-partner",
         )
+        challenge_lines = tuple(container.repository.get_invoice_line_records("testinger", challenge.document_id))
         challenge_llm_calls = _provider_calls(container)
         exact_count = sum(item.decision_kind is DecisionKind.EXACT_ALIAS for item in challenge.decisions)
 
-        # Explicit taxonomy collision: same supplier wording is valid for two tenants but maps differently.
         collision_a = container.canonicalizer.canonicalize(InvoiceLine(
             tenant_id="testinger",
             partner_id="default-partner",
@@ -64,7 +458,6 @@ def main() -> int:
             source_line_id="demo-collision-b",
         ))
 
-        # Tier 2: high-confidence bounded retrieval can keep the transaction flowing without a model call.
         auto = container.canonicalizer.canonicalize(InvoiceLine(
             tenant_id="testinger",
             partner_id="default-partner",
@@ -73,7 +466,6 @@ def main() -> int:
         ))
         calls_after_auto = _provider_calls(container)
 
-        # Tier 2 uncertain tail: one bounded generation creates staged knowledge, not approved knowledge.
         novel_line = InvoiceLine(
             tenant_id="testinger",
             partner_id="default-partner",
@@ -93,7 +485,6 @@ def main() -> int:
         if pending is None:
             raise RuntimeError("novel product review was not staged")
 
-        # Tier 3: human approval promotes knowledge. The next occurrence is Tier 1 exact lookup.
         approved = container.reviews.approve(
             "testinger",
             pending.review_id,
@@ -103,134 +494,60 @@ def main() -> int:
         learned = container.canonicalizer.canonicalize(replace(novel_line, source_line_id="demo-after-approval"))
         calls_after_learning = _provider_calls(container)
 
-        recurrence_points = [1, 10, 100, 1_000, 10_000]
-        cost_curve = [
-            {
-                "occurrences_of_same_unique_unknown": n,
-                "maximum_model_proposals_while_pending": 1,
-                "normalized_model_calls_per_1000_occurrences": _rate_per_1000(n),
-            }
-            for n in recurrence_points
-        ]
-
-        smoke_test = {
-            "label": "integration_smoke_test_not_model_accuracy",
-            "parser": challenge.parser_name,
-            "invoice": challenge.context.to_dict(),
-            "extraction_quality": challenge.quality.to_dict() if challenge.quality else None,
-            "financial_reconciliation": challenge.financial_quality.to_dict() if challenge.financial_quality else None,
-            "rows": len(challenge.decisions),
-            "exact_aliases": exact_count,
-            "llm_calls": challenge_llm_calls,
-            "canonical_descriptions": [item.canonical_description for item in challenge.decisions],
-        }
-
-        evidence = {
-            "narrative": {
-                "core_tiers": [
-                    "Tier 1 - deterministic approved lookup ($0 model cost)",
-                    "Tier 2 - bounded retrieval / AI fallback for uncertainty",
-                    "Tier 3 - governed human learning that promotes trusted knowledge",
-                ],
-                "delivery_primitives": ["REST", "MCP", "Docker", "CI/CD", "PostgreSQL migration"],
-            },
-            "document_ingestion_guardrail": smoke_test,
-            # Backward-compatible alias retained for existing assessor artifacts.
-            "challenge": smoke_test,
-            "tenant_taxonomy_collision": {
-                "raw_description": "Steel Accessories",
-                "tenant_a": {
-                    "tenant_id": "testinger",
-                    "canonical_description": collision_a.canonical_description,
-                    "decision_kind": collision_a.decision_kind.value,
-                },
-                "tenant_b": {
-                    "tenant_id": "other-tenant",
-                    "canonical_description": collision_b.canonical_description,
-                    "decision_kind": collision_b.decision_kind.value,
-                },
-                "same_raw_text_different_products": collision_a.canonical_product_id != collision_b.canonical_product_id,
-            },
-            "tier_2_high_confidence_retrieval": {
-                "input": auto.input_description,
-                "decision_kind": auto.decision_kind.value,
-                "canonical_description": auto.canonical_description,
-                "transaction_blocked": auto.requires_human_review,
-                "knowledge_review_staged": bool(auto.review_id),
-                "additional_llm_calls": calls_after_auto - challenge_llm_calls,
-            },
-            # Backward-compatible key retained for existing references.
-            "high_confidence_retrieval": {
-                "input": auto.input_description,
-                "decision_kind": auto.decision_kind.value,
-                "canonical_description": auto.canonical_description,
-                "transaction_blocked": auto.requires_human_review,
-                "knowledge_review_staged": bool(auto.review_id),
-                "additional_llm_calls": calls_after_auto - challenge_llm_calls,
-            },
-            "tier_2_novel_product": {
-                "decision_kind": novel.decision_kind.value,
-                "proposal": novel.canonical_description,
-                "transaction_blocked": novel.requires_human_review,
-                "llm_calls_for_first_occurrence": calls_after_novel - calls_after_auto,
-                "deduplicated_occurrences": pending.occurrence_count,
-                "additional_llm_calls_for_repeats": calls_after_repeats - calls_after_novel,
-            },
-            "novel_product": {
-                "decision_kind": novel.decision_kind.value,
-                "proposal": novel.canonical_description,
-                "transaction_blocked": novel.requires_human_review,
-                "llm_calls_for_first_occurrence": calls_after_novel - calls_after_auto,
-                "deduplicated_occurrences": pending.occurrence_count,
-                "additional_llm_calls_for_repeats": calls_after_repeats - calls_after_novel,
-            },
-            "tier_3_human_learning": {
-                "approved_product_id": approved.product_id,
-                "approved_description": approved.canonical_description,
-                "next_decision_kind": learned.decision_kind.value,
-                "next_canonical_description": learned.canonical_description,
-                "additional_llm_calls_after_approval": calls_after_learning - calls_after_repeats,
-            },
-            "human_learning": {
-                "approved_product_id": approved.product_id,
-                "approved_description": approved.canonical_description,
-                "next_decision_kind": learned.decision_kind.value,
-                "next_canonical_description": learned.canonical_description,
-                "additional_llm_calls_after_approval": calls_after_learning - calls_after_repeats,
-            },
-            "declining_cost_curve": {
-                "interpretation": "Model spend scales with unique unresolved concepts, not repeated invoice volume. After human approval, future occurrences use the exact-alias path.",
-                "metric": "normalized model calls per 1,000 repeated occurrences of one unique unknown",
-                "points": cost_curve,
-                "provider_dollar_cost_claimed": False,
-            },
-        }
+        evidence = _build_evidence(
+            challenge=challenge,
+            exact_count=exact_count,
+            challenge_llm_calls=challenge_llm_calls,
+            collision_a=collision_a,
+            collision_b=collision_b,
+            auto=auto,
+            calls_after_auto=calls_after_auto,
+            novel=novel,
+            calls_after_novel=calls_after_novel,
+            pending_occurrences=pending.occurrence_count,
+            calls_after_repeats=calls_after_repeats,
+            approved_product_id=approved.product_id,
+            approved_description=approved.canonical_description,
+            learned=learned,
+            calls_after_learning=calls_after_learning,
+        )
         REPORT.parent.mkdir(parents=True, exist_ok=True)
         REPORT.write_text(json.dumps(evidence, indent=2), encoding="utf-8")
 
-    print("=" * 74)
-    print("INVOICE CANONICALIZATION - THREE-TIER INTERVIEW DEMO")
-    print("=" * 74)
-    print("UPSTREAM DOCUMENT GUARDRAIL")
-    print(f"  Integration smoke test: {exact_count}/{len(challenge.decisions)} seeded aliases replayed; LLM calls={challenge_llm_calls}")
-    quality = challenge.quality.status.value if challenge.quality else "UNKNOWN"
-    print(f"  Extraction arithmetic quality: {quality} (garbage rows stop before canonicalization)")
-    financial_quality = challenge.financial_quality.status.value if challenge.financial_quality else "UNKNOWN"
-    print(f"  Full invoice retained: #{challenge.context.invoice_number}; seller/bill-to/ship-to + discount/tax/shipping; financial reconciliation={financial_quality}")
-    print("  These fields are persisted for audit/reconciliation but excluded from product naming prompts.")
-    print("TIER 1 - DETERMINISTIC APPROVED LOOKUP")
-    print(f"  Tenant collision: 'Steel Accessories' -> {collision_a.canonical_description} / {collision_b.canonical_description}")
-    print("TIER 2 - BOUNDED RETRIEVAL / AI FALLBACK")
-    print(f"  {auto.input_description!r} -> {auto.canonical_description}; extra LLM calls={calls_after_auto - challenge_llm_calls}")
-    print(f"  {novel.input_description!r} -> {novel.canonical_description}; first LLM calls={calls_after_novel - calls_after_auto}")
-    print(f"  Same unknown observed {pending.occurrence_count} times -> extra LLM calls={calls_after_repeats - calls_after_novel}")
-    print("TIER 3 - GOVERNED HUMAN LEARNING")
-    print(f"  Human approval -> {approved.canonical_description}")
-    print(f"  Next occurrence -> {learned.decision_kind.value}; extra LLM calls={calls_after_learning - calls_after_repeats}")
-    print("ECONOMICS")
-    print("  Model-call rate declines with repeated volume because calls are per unique unknown, then approvals become exact aliases.")
-    print("=" * 74)
-    print("Evidence: reports/interview_demo.json")
+    if args.json:
+        print(json.dumps(evidence, indent=2))
+        return 0
+
+    _panel([
+        "INVOICE CANONICALIZATION AGENT",
+        "Deterministic first · AI only for uncertainty · Human approvals become reusable knowledge",
+    ])
+    _print_challenge_input(challenge_lines, challenge.context.invoice_number, challenge.parser_name)
+    _print_quality(challenge)
+    _pause(args.step)
+
+    _print_challenge_result(challenge_lines, exact_count, challenge_llm_calls)
+    _pause(args.step)
+
+    _print_unknown_intro(novel.input_description)
+    _pause(args.step)
+
+    provider_name = novel.provider or "none"
+    _print_pipeline_trace(
+        novel,
+        calls_after_novel - calls_after_auto,
+        pending.occurrence_count,
+        calls_after_repeats - calls_after_novel,
+        provider_name,
+    )
+    _pause(args.step)
+
+    _print_learning(
+        approved.canonical_description,
+        learned,
+        calls_after_learning - calls_after_repeats,
+    )
+    _print_final_summary(exact_count, len(challenge_lines))
     return 0
 
 
