@@ -1,68 +1,37 @@
 <!doctype html><html><head><meta charset='utf-8'><title>Quality Gate</title>
 <style>body{font-family:Arial,sans-serif;max-width:1100px;margin:40px auto;padding:0 20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px;text-align:left}pre{white-space:pre-wrap;background:#f4f4f4;padding:12px}</style></head>
-<body><h1>Quality Gate: PASS</h1><table><tr><th>Gate</th><th>Status</th><th>Seconds</th></tr><tr><td>lockfile</td><td>PASS</td><td>0.084</td></tr><tr><td>ruff</td><td>PASS</td><td>3.416</td></tr><tr><td>mypy</td><td>WARN</td><td>36.297</td></tr><tr><td>static_contract</td><td>PASS</td><td>0.150</td></tr><tr><td>compile</td><td>PASS</td><td>0.092</td></tr><tr><td>documentation</td><td>PASS</td><td>0.052</td></tr><tr><td>architecture</td><td>PASS</td><td>0.061</td></tr><tr><td>completeness</td><td>PASS</td><td>0.160</td></tr><tr><td>secret_scan</td><td>PASS</td><td>2.876</td></tr><tr><td>tests_with_coverage</td><td>PASS</td><td>9.054</td></tr><tr><td>coverage_threshold</td><td>PASS</td><td>0.376</td></tr><tr><td>coverage_xml</td><td>PASS</td><td>0.418</td></tr><tr><td>offline_evaluation</td><td>PASS</td><td>0.251</td></tr><tr><td>interview_demo</td><td>PASS</td><td>0.470</td></tr><tr><td>package_build</td><td>PASS</td><td>0.797</td></tr><tr><td>wheel_install_smoke</td><td>PASS</td><td>0.659</td></tr><tr><td>docker_build</td><td>SKIP</td><td>0.000</td></tr><tr><td>report_sanitization</td><td>PASS</td><td>0.001</td></tr></table><h2>lockfile - PASS</h2><pre>Lockfile gate passed: 16 runtime pins, 40 CI/dev pins</pre><h2>ruff - PASS</h2><pre>All checks passed!</pre><h2>mypy - WARN</h2><pre>src/invoice_canonicalizer/infrastructure/llm/fixture_provider.py:35: error:
-Need type annotation for &quot;extraction_payload&quot;  [var-annotated]
-            extraction_payload = {&quot;responses&quot;: []}
-                                 ^~~~~~~~~~~~~~~~~
-src/invoice_canonicalizer/infrastructure/documents/invoice_context.py:359: error:
-Argument 1 to &quot;parse_decimal&quot; has incompatible type &quot;Any | object&quot;; expected
-&quot;str | int | float | Decimal | None&quot;  [arg-type]
-            subtotal=parse_decimal(subtotal) if subtotal is not None else ...
-                                   ^~~~~~~~
-src/invoice_canonicalizer/application/review_queue.py:80: error: Incompatible
-types in assignment (expression has type &quot;dict[str, object]&quot;, variable has type
-&quot;dict[str, str]&quot;)  [assignment]
-                row = self.store.review_to_row(review)
-                      ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src/invoice_canonicalizer/application/review_queue.py:89: error: Argument 2 to
-&quot;write_rows&quot; of &quot;CsvReviewQueueStore&quot; has incompatible type
-&quot;list[dict[str, str]]&quot;; expected &quot;Iterable[dict[str, object]]&quot;  [arg-type]
-            self.store.write_rows(path, output_rows)
-                                        ^~~~~~~~~~~
-src/invoice_canonicalizer/application/canonicalization.py:425: error: Argument
-1 to &quot;float&quot; has incompatible type &quot;object&quot;; expected
-&quot;str | Buffer | SupportsFloat | SupportsIndex&quot;  [arg-type]
-            top_score = float(evidence[0].get(&quot;score&quot;, 0.0)) if evidence e...
-                              ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src/invoice_canonicalizer/application/factory.py:67: error: Incompatible types
-in assignment (expression has type &quot;OpenAICompatibleProvider&quot;, variable has type
-&quot;FixtureModelProvider&quot;)  [assignment]
-            provider = OpenAICompatibleProvider(
-                       ^
-src/invoice_canonicalizer/application/factory.py:131: error: Argument
-&quot;canonicalizer&quot; to &quot;IngestionService&quot; has incompatible type
-&quot;CanonicalizationService&quot;; expected &quot;Canonicalizer&quot;  [arg-type]
-            canonicalizer=canonicalizer,
-                          ^~~~~~~~~~~~~
-src/invoice_canonicalizer/application/factory.py:131: note: Following member(s) of &quot;CanonicalizationService&quot; have conflicts:
-src/invoice_canonicalizer/application/factory.py:131: note:     Expected:
-src/invoice_canonicalizer/application/factory.py:131: note:         def canonicalize(self, line: InvoiceLine, budget: DocumentBudget | None = ...) -&gt; CanonicalizationDecision
-src/invoice_canonicalizer/application/factory.py:131: note:     Got:
-src/invoice_canonicalizer/application/factory.py:131: note:         def canonicalize(self, line: InvoiceLine, budget: CostBudget | None = ...) -&gt; CanonicalizationDecision
-src/invoice_canonicalizer/cli.py:122: error: Incompatible types in assignment
-(expression has type &quot;dict[str, object]&quot;, variable has type
-&quot;DocumentProcessingResult&quot;)  [assignment]
-            result = container.review_queue.process(path, archive)
-                     ^~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-src/invoice_canonicalizer/cli.py:124: error: Value of type
-&quot;DocumentProcessingResult&quot; is not indexable  [index]
-            return 1 if result[&quot;errors&quot;] else 0
-                        ^~~~~~~~~~~~~~~~
-src/invoice_canonicalizer/cli.py:127: error: Incompatible types in assignment
-(expression has type
-&quot;list[dict[str, float | dict[str, str] | int | list[str] | str | None]]&quot;,
-variable has type
-&quot;dict[str, list[dict[str, Any]] | list[str] | str | dict[str, Any] | None]&quot;) 
-[assignment]
-            payload = [{
-                      ^
-Found 10 errors in 6 files (checked 57 source files)</pre><h2>static_contract - PASS</h2><pre>Static contract passed for 57 production Python modules</pre><h2>compile - PASS</h2><pre>No output</pre><h2>documentation - PASS</h2><pre>Documentation gate passed for 108 files</pre><h2>architecture - PASS</h2><pre>Architecture gate passed: 18 governed stages and all critical artifacts present</pre><h2>completeness - PASS</h2><pre>Completeness audit passed; report: reports/completeness_check.md</pre><h2>secret_scan - PASS</h2><pre>Secret scan passed</pre><h2>tests_with_coverage - PASS</h2><pre>........................................................................ [ 67%]
+<body><h1>Quality Gate: PASS</h1><table><tr><th>Gate</th><th>Status</th><th>Seconds</th></tr><tr><td>lockfile</td><td>PASS</td><td>0.098</td></tr><tr><td>ruff</td><td>WARN</td><td>0.159</td></tr><tr><td>mypy</td><td>PASS</td><td>0.409</td></tr><tr><td>static_contract</td><td>PASS</td><td>0.129</td></tr><tr><td>compile</td><td>PASS</td><td>0.074</td></tr><tr><td>documentation</td><td>PASS</td><td>0.060</td></tr><tr><td>architecture</td><td>PASS</td><td>0.066</td></tr><tr><td>completeness</td><td>PASS</td><td>0.174</td></tr><tr><td>secret_scan</td><td>PASS</td><td>3.238</td></tr><tr><td>tests_with_coverage</td><td>PASS</td><td>9.428</td></tr><tr><td>coverage_threshold</td><td>PASS</td><td>0.410</td></tr><tr><td>coverage_xml</td><td>PASS</td><td>0.461</td></tr><tr><td>offline_evaluation</td><td>PASS</td><td>0.275</td></tr><tr><td>interview_demo</td><td>PASS</td><td>0.506</td></tr><tr><td>package_build</td><td>PASS</td><td>0.877</td></tr><tr><td>wheel_install_smoke</td><td>PASS</td><td>0.675</td></tr><tr><td>docker_build</td><td>SKIP</td><td>0.000</td></tr><tr><td>report_sanitization</td><td>PASS</td><td>0.001</td></tr></table><h2>lockfile - PASS</h2><pre>Lockfile gate passed: 16 runtime pins, 40 CI/dev pins</pre><h2>ruff - WARN</h2><pre>F541 [*] f-string without any placeholders
+   --&gt; scripts/interview_demo.py:161:11
+    |
+159 | def _print_challenge_input(lines: Sequence[StoredInvoiceLine], invoice_number: str | None, parser_name: str) -&gt; None:
+160 |     _rule(&quot;THE ORIGINAL TASK — ACTUAL INPUT&quot;, number=&quot;01&quot;)
+161 |     print(f&quot;  Source    : data/examples/input/challenge_invoice.pdf&quot;)
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+162 |     print(f&quot;  Invoice   : #{_text(invoice_number)}&quot;)
+163 |     print(f&quot;  Parser    : {parser_name}&quot;)
+    |
+help: Remove extraneous `f` prefix
+
+F541 [*] f-string without any placeholders
+   --&gt; scripts/interview_demo.py:276:11
+    |
+274 |     print(f&quot;    decision             {learned.decision_kind.value}&quot;)
+275 |     print(f&quot;    additional LLM calls {additional_calls}&quot;)
+276 |     print(f&quot;    human review         0&quot;)
+    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+277 |     print()
+278 |     _panel([
+    |
+help: Remove extraneous `f` prefix
+
+Found 2 errors.
+[*] 2 fixable with the `--fix` option.</pre><h2>mypy - PASS</h2><pre>Success: no issues found in 57 source files</pre><h2>static_contract - PASS</h2><pre>Static contract passed for 57 production Python modules</pre><h2>compile - PASS</h2><pre>No output</pre><h2>documentation - PASS</h2><pre>Documentation gate passed for 108 files</pre><h2>architecture - PASS</h2><pre>Architecture gate passed: 18 governed stages and all critical artifacts present</pre><h2>completeness - PASS</h2><pre>Completeness audit passed; report: reports/completeness_check.md</pre><h2>secret_scan - PASS</h2><pre>Secret scan passed</pre><h2>tests_with_coverage - PASS</h2><pre>........................................................................ [ 67%]
 ...................................                                      [100%]
-107 passed in 3.92s</pre><h2>coverage_threshold - PASS</h2><pre>Name                                                                       Stmts   Miss Branch BrPart  Cover   Missing
+107 passed in 4.08s</pre><h2>coverage_threshold - PASS</h2><pre>Name                                                                       Stmts   Miss Branch BrPart  Cover   Missing
 ----------------------------------------------------------------------------------------------------------------------
 src/invoice_canonicalizer/application/budget.py                               29      1      6      1    94%   41
-src/invoice_canonicalizer/application/canonicalization.py                    137      3     24      3    96%   80, 117-118, 143-&gt;190
-src/invoice_canonicalizer/application/factory.py                              63      5     14      4    86%   66-79, 86, 89, 122-&gt;129
+src/invoice_canonicalizer/application/canonicalization.py                    137      3     24      3    96%   79, 116-117, 142-&gt;189
+src/invoice_canonicalizer/application/factory.py                              64      5     14      4    86%   68-81, 88, 91, 124-&gt;131
 src/invoice_canonicalizer/application/ingestion.py                            46      4     12      5    84%   43, 49-&gt;51, 52-&gt;55, 79, 86-87
 src/invoice_canonicalizer/application/review_queue.py                         62     10     14      2    84%   38-40, 42, 53-54, 68-69, 85-86
 src/invoice_canonicalizer/application/reviews.py                              63      7     26      7    84%   76, 95, 97, 106, 110, 118, 130
@@ -79,7 +48,7 @@ src/invoice_canonicalizer/infrastructure/documents/model_extractor.py         49
 src/invoice_canonicalizer/infrastructure/documents/pdf_parser.py              53     12      6      0    76%   27-40, 56-57, 65-66
 src/invoice_canonicalizer/infrastructure/documents/raw_text.py                61     27     26      7    52%   25-28, 30-32, 34-46, 48-49, 58-&gt;62, 63-&gt;67, 69, 74-78
 src/invoice_canonicalizer/infrastructure/documents/xlsx_parser.py             46      4     12      3    88%   31, 49, 61-62
-src/invoice_canonicalizer/infrastructure/llm/fixture_provider.py              71      5     16      8    85%   36-&gt;38, 64, 68, 88, 91-&gt;95, 92-&gt;91, 96, 99
+src/invoice_canonicalizer/infrastructure/llm/fixture_provider.py              72      5     16      8    85%   37-&gt;39, 65, 69, 89, 92-&gt;96, 93-&gt;92, 97, 100
 src/invoice_canonicalizer/infrastructure/llm/openai_compatible.py             91     13     14      4    82%   73-74, 81, 85, 103-104, 148-154
 src/invoice_canonicalizer/infrastructure/llm/prompt_registry.py               39      2     12      2    92%   46, 48
 src/invoice_canonicalizer/infrastructure/retrieval/semantic.py                 9      2      0      0    78%   26-27
@@ -93,7 +62,7 @@ src/invoice_canonicalizer/utils/hashing.py                                    13
 src/invoice_canonicalizer/utils/money.py                                      23      2      6      0    93%   24-25
 src/invoice_canonicalizer/utils/text.py                                       30      3      6      3    83%   30, 32, 43
 ----------------------------------------------------------------------------------------------------------------------
-TOTAL                                                                       2615    366    666    135    83%
+TOTAL                                                                       2617    366    666    135    83%
 
 23 files skipped due to complete coverage.</pre><h2>coverage_xml - PASS</h2><pre>Wrote XML report to reports/coverage.xml</pre><h2>offline_evaluation - PASS</h2><pre>{
   &quot;canonical_exact_accuracy&quot;: 1.0,
@@ -101,37 +70,136 @@ TOTAL                                                                       2615
   &quot;decision_kind_accuracy&quot;: 1.0,
   &quot;estimated_cost_usd&quot;: &quot;0.000000&quot;,
   &quot;false_blocking_bypass_count&quot;: 0,
+  &quot;golden_dataset&quot;: &quot;evals/cases/canonicalization_cases.jsonl&quot;,
   &quot;knowledge_review_accuracy&quot;: 1.0,
   &quot;llm_usage_accuracy&quot;: 1.0,
   &quot;missing_knowledge_review_count&quot;: 0,
+  &quot;model_candidate_exact_accuracy_on_golden_cases&quot;: 1.0,
+  &quot;model_candidate_mismatch_rate_on_golden_cases&quot;: 0.0,
+  &quot;model_case_count&quot;: 2,
+  &quot;model_review_bypass_count&quot;: 0,
   &quot;transaction_routing_accuracy&quot;: 1.0,
-  &quot;unexpected_llm_call_count&quot;: 0
-}</pre><h2>interview_demo - PASS</h2><pre>==========================================================================
-INVOICE CANONICALIZATION - THREE-TIER INTERVIEW DEMO
-==========================================================================
-UPSTREAM DOCUMENT GUARDRAIL
-  Integration smoke test: 6/6 seeded aliases replayed; LLM calls=0
-  Extraction arithmetic quality: PASS (garbage rows stop before canonicalization)
-  Full invoice retained: #19283746552; seller/bill-to/ship-to + discount/tax/shipping; financial reconciliation=PASS
-  These fields are persisted for audit/reconciliation but excluded from product naming prompts.
-TIER 1 - DETERMINISTIC APPROVED LOOKUP
-  Tenant collision: &#x27;Steel Accessories&#x27; -&gt; Highlife Components / Maintenance Hardware Kit
-TIER 2 - BOUNDED RETRIEVAL / AI FALLBACK
-  &#x27;Athletic crew socks&#x27; -&gt; Crew Socks; extra LLM calls=0
-  &#x27;Black Leather Jacket Midnight&#x27; -&gt; Black Leather Jacket; first LLM calls=1
-  Same unknown observed 26 times -&gt; extra LLM calls=0
-TIER 3 - GOVERNED HUMAN LEARNING
-  Human approval -&gt; Black Leather Jacket
-  Next occurrence -&gt; exact_alias; extra LLM calls=0
-ECONOMICS
-  Model-call rate declines with repeated volume because calls are per unique unknown, then approvals become exact aliases.
-==========================================================================
-Evidence: reports/interview_demo.json</pre><h2>package_build - PASS</h2><pre>Processing ./.
+  &quot;unexpected_llm_call_count&quot;: 0,
+  &quot;unsafe_auto_accept_count&quot;: 0
+}</pre><h2>interview_demo - PASS</h2><pre>╭────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ INVOICE CANONICALIZATION AGENT                                                                         │
+│ Deterministic first · AI only for uncertainty · Human approvals become reusable knowledge              │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+ 01  THE ORIGINAL TASK — ACTUAL INPUT ────────────────────────────────────────────────────────────────────
+  Source    : data/examples/input/challenge_invoice.pdf
+  Invoice   : #19283746552
+  Parser    : pdf-native-text
+
+┌─────┬─────────────────────────────────────────┬───────┬────────────┬──────────────┐
+│   # │ Original invoice description            │   Qty │       Unit │   Line total │
+├─────┼─────────────────────────────────────────┼───────┼────────────┼──────────────┤
+│   1 │ Highlife Steel Accessories              │     1 │      10.00 │        10.00 │
+│   2 │ Sneaker “Unstoppable”                   │     2 │      11.00 │        22.00 │
+│   3 │ T-Shirt White “Polarbear”               │     3 │      12.00 │        36.00 │
+│   4 │ T-Shirt Beige “Grizzly”                 │     4 │      13.00 │        52.00 │
+│   5 │ Shorts “El Camino”                      │     5 │      14.00 │        70.00 │
+│   6 │ Socks, black                            │     6 │      15.00 │        90.00 │
+└─────┴─────────────────────────────────────────┴───────┴────────────┴──────────────┘
+
+  ✓ Extraction quality           PASS
+    Calculated subtotal          280.00
+    Declared subtotal            280.00
+  ✓ Financial reconciliation     PASS
+    Currency / amount due        USD 332.40
+
+ 02  REQUESTED CANONICAL RESULT ──────────────────────────────────────────────────────────────────────────
+┌─────────────────────────────────────────┬─────────────────────────────┬──────────────────┐
+│ Original description                    │ Canonical description       │ Decision         │
+├─────────────────────────────────────────┼─────────────────────────────┼──────────────────┤
+│ Highlife Steel Accessories              │ Highlife Components         │ exact_alias      │
+│ Sneaker “Unstoppable”                   │ Performance Sneakers        │ exact_alias      │
+│ T-Shirt White “Polarbear”               │ White Tee                   │ exact_alias      │
+│ T-Shirt Beige “Grizzly”                 │ Beige Tee                   │ exact_alias      │
+│ Shorts “El Camino”                      │ Casual Shorts               │ exact_alias      │
+│ Socks, black                            │ Crew Socks                  │ exact_alias      │
+└─────────────────────────────────────────┴─────────────────────────────┴──────────────────┘
+
+  ✓ Challenge mappings           6/6 expected mappings
+  ✓ LLM calls                    0
+  ✓ Human reviews                0
+  ✓ Result                       deterministic replay
+
+ 03  NOW INTRODUCE A PRODUCT THE CATALOG DOES NOT KNOW ───────────────────────────────────────────────────
+
+╭────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ NOVELTY SCENARIO                                                                                       │
+│                                                                                                        │
+│ New invoice description:  &quot;Black Leather Jacket Midnight&quot;                                              │
+│ Catalog state:             no approved exact alias                                                     │
+│ Goal:                      resolve safely without silently trusting a guess                            │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+ 04  PIPELINE TRACE — ONE UNKNOWN THROUGH ALL THREE TIERS ────────────────────────────────────────────────
+  DOCUMENT GATE
+    ✓ extraction already validated
+    ✓ arithmetic already validated
+    ✓ only product-line evidence enters canonicalization
+        │
+        ▼
+  TIER 1 · APPROVED EXACT LOOKUP
+    normalized input     black leather jacket midnight
+    exact alias          ✗ NOT FOUND
+        │
+        ▼
+  TIER 2 · APPROVED RETRIEVAL + BOUNDED AI
+    top retrieval        Crew Socks  (score=0.352)
+    evidence sufficient  ✗ NO — do not auto-match
+    provider             fixture  (deterministic offline fixture for the demo)
+    bounded proposal     Black Leather Jacket
+    model calls          1
+    trusted knowledge?   ✗ NO — proposal only
+        │
+        ▼
+  TIER 3 · HUMAN GOVERNANCE
+    review candidate     Black Leather Jacket Midnight
+    proposed mapping     → Black Leather Jacket
+    status               WAITING FOR APPROVAL
+    repeated occurrences 26
+    extra model calls    0  (pending candidate is reused)
+
+ 05  HUMAN APPROVAL → REUSABLE KNOWLEDGE ─────────────────────────────────────────────────────────────────
+
+  Reviewer decision      ✓ APPROVED
+  Knowledge promoted     Black Leather Jacket Midnight  →  Black Leather Jacket
+
+  Same description arrives again:
+    Tier 1 exact alias    ✓ FOUND
+    canonical product    Black Leather Jacket
+    decision             exact_alias
+    additional LLM calls 0
+    human review         0
+
+╭────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ FIRST OCCURRENCE                           FUTURE OCCURRENCES                                          │
+│ Unknown → retrieval → AI proposal          Known → exact approved lookup                               │
+│            → human approval                       → canonical product ID                               │
+│                                                                                                        │
+│ 1 bounded proposal + 1 approval            0 model calls + 0 reviews                                   │
+│                                                                                                        │
+│ WILD  →  TAMED                                                                                         │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+ DEMO COMPLETE ───────────────────────────────────────────────────────────────────────────────────────────
+╭────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ ✓ Supplied challenge reproduces 6/6 approved mappings                                                  │
+│ ✓ Known descriptions resolve deterministically without an LLM                                          │
+│ ✓ Unknown descriptions are bounded, reviewable, and deduplicated                                       │
+│ ✓ Unapproved AI output never silently becomes trusted knowledge                                        │
+│ ✓ Human approval turns future occurrences into exact deterministic lookup                              │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
+  Machine-readable evidence: reports/interview_demo.json</pre><h2>package_build - PASS</h2><pre>Processing ./.
   Preparing metadata (pyproject.toml): started
   Preparing metadata (pyproject.toml): finished with status &#x27;done&#x27;
 Building wheels for collected packages: invoice-canonicalization-agent
   Building wheel for invoice-canonicalization-agent (pyproject.toml): started
   Building wheel for invoice-canonicalization-agent (pyproject.toml): finished with status &#x27;done&#x27;
-  Created wheel for invoice-canonicalization-agent: filename=invoice_canonicalization_agent-1.0.0-py3-none-any.whl size=88717 sha256=fab5291e5ba0222fbc48a6123c0b1f80b23f9eb2e9ef29d72e84b2688d5d88d5
-  Stored in directory: /private/var/folders/66/3kjx4ck97gjfgcmxk9dyxld40000gn/T/pip-ephem-wheel-cache-sxsnj183/wheels/3d/b1/5f/242803963b8977209a4ca14c1d1ff4db1d6e1135b43905227c
+  Created wheel for invoice-canonicalization-agent: filename=invoice_canonicalization_agent-1.0.0-py3-none-any.whl size=89874 sha256=70111372e981486aed0796d643ca1cc33241e9d2d86f8563500a482297f588f6
+  Stored in directory: /private/var/folders/66/3kjx4ck97gjfgcmxk9dyxld40000gn/T/pip-ephem-wheel-cache-just2cu3/wheels/3d/b1/5f/242803963b8977209a4ca14c1d1ff4db1d6e1135b43905227c
 Successfully built invoice-canonicalization-agent</pre><h2>wheel_install_smoke - PASS</h2><pre>{&quot;description&quot;: &quot;Crew Socks&quot;, &quot;review&quot;: false}</pre><h2>docker_build - SKIP</h2><pre>Docker engine is not installed</pre><h2>report_sanitization - PASS</h2><pre>No build-environment paths or private package-index hosts found</pre></body></html>

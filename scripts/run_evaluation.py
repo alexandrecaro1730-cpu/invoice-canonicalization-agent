@@ -30,6 +30,9 @@ def run() -> dict[str, object]:
         llm_usage_correct = 0
         kind_correct = 0
         cost = Decimal("0")
+        model_case_count = 0
+        model_case_correct = 0
+        model_review_bypass_count = 0
         for index, case in enumerate(cases, start=1):
             before_calls = container.canonicalizer.provider.call_count
             decision = container.canonicalizer.canonicalize(InvoiceLine(
@@ -49,6 +52,11 @@ def run() -> dict[str, object]:
             llm_usage_correct += int(is_llm_correct)
             kind_correct += int(is_kind_correct)
             cost += decision.estimated_cost_usd
+            if case["expected_llm"]:
+                model_case_count += 1
+                model_case_correct += int(is_correct)
+            if llm_used and not actual_knowledge_review:
+                model_review_bypass_count += 1
             rows.append({
                 "description": case["description"],
                 "expected": case["expected"],
@@ -68,8 +76,14 @@ def run() -> dict[str, object]:
                 "decision_kind_correct": is_kind_correct,
             })
         total = len(cases)
+        model_case_exact_accuracy = model_case_correct / model_case_count if model_case_count else 1.0
         return {
+            "golden_dataset": "evals/cases/canonicalization_cases.jsonl",
             "cases": total,
+            "model_case_count": model_case_count,
+            "model_candidate_exact_accuracy_on_golden_cases": model_case_exact_accuracy,
+            "model_candidate_mismatch_rate_on_golden_cases": 1.0 - model_case_exact_accuracy,
+            "model_review_bypass_count": model_review_bypass_count,
             "canonical_exact_accuracy": correct / total,
             "transaction_routing_accuracy": routing_correct / total,
             "knowledge_review_accuracy": knowledge_review_correct / total,
@@ -77,6 +91,7 @@ def run() -> dict[str, object]:
             "decision_kind_accuracy": kind_correct / total,
             "estimated_cost_usd": format(cost.quantize(Decimal("0.000001")), "f"),
             "false_blocking_bypass_count": sum(1 for row in rows if row["expected_transaction_review"] and not row["actual_transaction_review"]),
+            "unsafe_auto_accept_count": sum(1 for row in rows if row["expected_knowledge_review"] and not row["actual_knowledge_review"]),
             "missing_knowledge_review_count": sum(1 for row in rows if row["expected_knowledge_review"] and not row["actual_knowledge_review"]),
             "unexpected_llm_call_count": sum(1 for row in rows if not row["expected_llm"] and row["actual_llm"]),
             "rows": rows,
@@ -98,6 +113,8 @@ def main() -> int:
         and result["false_blocking_bypass_count"] == 0
         and result["missing_knowledge_review_count"] == 0
         and result["unexpected_llm_call_count"] == 0
+        and result["model_review_bypass_count"] == 0
+        and result["unsafe_auto_accept_count"] == 0
     )
     return 0 if passed else 1
 

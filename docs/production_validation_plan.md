@@ -49,7 +49,22 @@ Compare:
 - re-indexing cost after taxonomy changes;
 - performance across languages and short/noisy descriptions.
 
-## 4. Run a controlled live-provider evaluation
+## 4. Benchmark and select the model offline
+
+Model choice should be evidence-driven rather than dynamically guessed at runtime. Run every candidate provider/model against the same reviewer-approved golden dataset and compare:
+
+- exact canonical candidate agreement on labelled unknowns;
+- unsafe auto-accept / review-bypass count;
+- abstention behavior;
+- schema compliance;
+- hallucinated or unsupported attributes;
+- token usage and cost per unique unresolved concept;
+- p50 / p95 latency;
+- timeout/retry behavior.
+
+Select the smallest/cheapest model that meets the agreed quality and safety thresholds. Keep the selected model/version in configuration so rollbacks are explicit and reproducible. Runtime multi-model routing is intentionally out of scope until benchmark evidence shows it adds value.
+
+## 5. Run a controlled live-provider evaluation
 
 Offline fixtures prove prompt/output contracts without provider drift or API cost. A production candidate still needs a controlled live evaluation covering:
 
@@ -64,7 +79,7 @@ Offline fixtures prove prompt/output contracts without provider drift or API cos
 
 No live model should be allowed to mutate approved knowledge directly.
 
-## 5. Validate document extraction on real invoice diversity
+## 6. Validate document extraction on real invoice diversity
 
 Test native and scanned invoices across:
 
@@ -78,7 +93,7 @@ Test native and scanned invoices across:
 
 Track extraction success separately from canonicalization accuracy so ingestion failures do not become product-routing metrics.
 
-## 6. Operational acceptance criteria
+## 7. Operational acceptance criteria
 
 Before production rollout, define and measure:
 
@@ -92,7 +107,7 @@ Before production rollout, define and measure:
 - rollback/audit completeness;
 - incident and reprocessing procedures.
 
-## 7. Rollout sequence
+## 8. Rollout sequence
 
 A sensible rollout is:
 

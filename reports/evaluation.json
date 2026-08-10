@@ -4,9 +4,14 @@
   "decision_kind_accuracy": 1.0,
   "estimated_cost_usd": "0.000000",
   "false_blocking_bypass_count": 0,
+  "golden_dataset": "evals/cases/canonicalization_cases.jsonl",
   "knowledge_review_accuracy": 1.0,
   "llm_usage_accuracy": 1.0,
   "missing_knowledge_review_count": 0,
+  "model_candidate_exact_accuracy_on_golden_cases": 1.0,
+  "model_candidate_mismatch_rate_on_golden_cases": 0.0,
+  "model_case_count": 2,
+  "model_review_bypass_count": 0,
   "rows": [
     {
       "actual": "Highlife Components",
@@ -208,5 +213,6 @@
     }
   ],
   "transaction_routing_accuracy": 1.0,
-  "unexpected_llm_call_count": 0
+  "unexpected_llm_call_count": 0,
+  "unsafe_auto_accept_count": 0
 }

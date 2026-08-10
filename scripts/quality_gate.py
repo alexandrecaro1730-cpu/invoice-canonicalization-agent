@@ -191,6 +191,14 @@ def main() -> int:
     print("=" * 72)
     print(f"OVERALL: {overall}")
     print("Reports: reports/quality_summary.html")
+    failed = [item for item in results if item.status == "FAIL"]
+    if failed:
+        print("\nFAILURE DETAILS")
+        print("=" * 72)
+        for item in failed:
+            print(f"{item.name} - FAIL")
+            print(item.details or "No output captured")
+            print("-" * 72)
     return 0 if overall == "PASS" else 1
 
 

@@ -10,6 +10,7 @@ from dataclasses import dataclass
 
 from invoice_canonicalizer.application.canonicalization import CanonicalizationService
 from invoice_canonicalizer.application.ingestion import IngestionService
+from invoice_canonicalizer.application.ports import ModelProvider
 from invoice_canonicalizer.application.review_queue import ReviewQueueService
 from invoice_canonicalizer.application.reviews import ReviewService
 from invoice_canonicalizer.config import AppSettings
@@ -57,6 +58,7 @@ def build_container(
     ):
         prompts.load(prompt_path)
     styles = json.loads(settings.client_styles_path.read_text(encoding="utf-8"))
+    provider: ModelProvider
     if settings.provider_name == "fixture":
         provider = FixtureModelProvider(
             settings.prompt_dir / "fixtures" / "model_responses.json",

@@ -82,25 +82,25 @@ def main(argv: list[str] | None = None) -> int:
         print(json.dumps(decision.to_dict(), indent=2, sort_keys=True))
         return 0
     if args.command == "document":
-        result = container.ingestion.process(args.path, args.tenant, args.partner)
-        payload = {
-            "document_id": result.document_id,
-            "source_name": result.source_name,
-            "parser_name": result.parser_name,
-            "warnings": list(result.warnings),
-            "invoice": result.context.to_dict(),
-            "extraction_quality": result.quality.to_dict() if result.quality else None,
-            "financial_reconciliation": result.financial_quality.to_dict() if result.financial_quality else None,
-            "decisions": [decision.to_dict() for decision in result.decisions],
+        document_result = container.ingestion.process(args.path, args.tenant, args.partner)
+        document_payload = {
+            "document_id": document_result.document_id,
+            "source_name": document_result.source_name,
+            "parser_name": document_result.parser_name,
+            "warnings": list(document_result.warnings),
+            "invoice": document_result.context.to_dict(),
+            "extraction_quality": document_result.quality.to_dict() if document_result.quality else None,
+            "financial_reconciliation": document_result.financial_quality.to_dict() if document_result.financial_quality else None,
+            "decisions": [decision.to_dict() for decision in document_result.decisions],
         }
-        print(json.dumps(payload, indent=2, sort_keys=True))
+        print(json.dumps(document_payload, indent=2, sort_keys=True))
         return 0
     if args.command == "document-show":
         parsed = container.repository.get_invoice_document(args.tenant, args.document_id)
         if parsed is None:
             print(json.dumps({"error": "document_not_found", "document_id": args.document_id}, indent=2))
             return 1
-        payload = {
+        stored_document_payload = {
             "document_id": parsed.document_id,
             "source_name": parsed.source_name,
             "parser_name": parsed.parser_name,
@@ -109,7 +109,7 @@ def main(argv: list[str] | None = None) -> int:
             "extraction_quality": parsed.quality.to_dict() if parsed.quality else None,
             "financial_reconciliation": parsed.financial_quality.to_dict() if parsed.financial_quality else None,
         }
-        print(json.dumps(payload, indent=2, sort_keys=True))
+        print(json.dumps(stored_document_payload, indent=2, sort_keys=True))
         return 0
     if args.command == "review-export":
         path = args.path if args.path.is_absolute() else settings.project_root / args.path
@@ -119,12 +119,12 @@ def main(argv: list[str] | None = None) -> int:
     if args.command == "review-process":
         path = args.path if args.path.is_absolute() else settings.project_root / args.path
         archive = args.archive if args.archive.is_absolute() else settings.project_root / args.archive
-        result = container.review_queue.process(path, archive)
-        print(json.dumps(result, indent=2, sort_keys=True))
-        return 1 if result["errors"] else 0
+        review_result = container.review_queue.process(path, archive)
+        print(json.dumps(review_result, indent=2, sort_keys=True))
+        return 1 if review_result["errors"] else 0
     if args.command == "review-list":
         pending = container.reviews.list_pending(args.tenant, limit=args.limit)
-        payload = [{
+        review_payload = [{
             "review_id": item.review_id,
             "source_description": item.source_description,
             "source_variants": list(item.source_variants),
@@ -139,6 +139,6 @@ def main(argv: list[str] | None = None) -> int:
             "blocks_transaction": item.blocks_transaction,
             "risk_flags": list(item.risk_flags),
         } for item in pending]
-        print(json.dumps(payload, indent=2, sort_keys=True))
+        print(json.dumps(review_payload, indent=2, sort_keys=True))
         return 0
     return 2

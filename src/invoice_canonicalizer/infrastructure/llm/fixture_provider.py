@@ -9,6 +9,7 @@ import json
 import re
 from decimal import Decimal
 from pathlib import Path
+from typing import Any
 
 from invoice_canonicalizer.domain.errors import ProviderError
 from invoice_canonicalizer.domain.models import ExtractionProviderResult, ProviderResult
@@ -32,7 +33,7 @@ class FixtureModelProvider:
         payload = json.loads(fixture_path.read_text(encoding="utf-8"))
         self._responses = {normalize_text(key): value for key, value in payload["responses"].items()}
         self._default = payload.get("default")
-        extraction_payload = {"responses": []}
+        extraction_payload: dict[str, Any] = {"responses": []}
         if extraction_fixture_path is not None and extraction_fixture_path.exists():
             extraction_payload = json.loads(extraction_fixture_path.read_text(encoding="utf-8"))
         self._extraction_responses = list(extraction_payload.get("responses", []))

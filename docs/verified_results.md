@@ -14,7 +14,7 @@ This snapshot is regenerated/confirmed for the final `v1.0.0` assessment deliver
 - Branch-aware coverage: 83%, above the configured 80% minimum.
 - Six supplied challenge descriptions replay through seeded approved aliases with zero canonicalization LLM calls.
 - Challenge invoice extraction passes line arithmetic and subtotal reconciliation.
-- Eleven curated routing cases match their expected canonical/routing behavior.
+- Eleven versioned golden regression cases match their expected canonical/routing behavior. The report separately exposes model-candidate agreement, unsafe auto-accept count, and model-review bypass count; these are regression metrics, not a population-level hallucination claim.
 - Repeated unresolved `Black Leather Jacket Midnight` occurrences reuse one pending concept/model proposal; after human approval, the next occurrence is an exact approved alias with zero additional LLM calls.
 - Cross-tenant collision behavior is covered: identical raw text may map to different canonical products under different tenant scopes.
 - Package wheel builds and passes isolated-install smoke testing.

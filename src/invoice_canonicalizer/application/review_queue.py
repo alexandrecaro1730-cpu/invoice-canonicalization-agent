@@ -28,11 +28,11 @@ class ReviewQueueService:
         errors: list[dict[str, str]] = []
         touched_tenants: set[str] = set()
 
-        for row in rows:
-            tenant_id = row["tenant_id"].strip()
-            review_id = row["review_id"].strip()
+        for queue_row in rows:
+            tenant_id = queue_row["tenant_id"].strip()
+            review_id = queue_row["review_id"].strip()
             touched_tenants.add(tenant_id)
-            raw_status = (row.get("status") or ReviewAction.WAITING.value).strip().lower()
+            raw_status = (queue_row.get("status") or ReviewAction.WAITING.value).strip().lower()
             try:
                 action = ReviewAction(raw_status)
             except ValueError:
@@ -46,9 +46,9 @@ class ReviewQueueService:
                         tenant_id=tenant_id,
                         review_id=review_id,
                         action=action,
-                        reviewer_notes=row.get("reviewer_notes", ""),
+                        reviewer_notes=queue_row.get("reviewer_notes", ""),
                     )
-                    self.store.append_archive(archive_path, row, outcome)
+                    self.store.append_archive(archive_path, queue_row, outcome)
                     deferred += 1
                 except Exception as exc:  # preserve row for manual correction
                     errors.append({"review_id": review_id, "error": str(exc)})
@@ -58,12 +58,12 @@ class ReviewQueueService:
                     tenant_id=tenant_id,
                     review_id=review_id,
                     action=action,
-                    approved_description=(row.get("approved_description_override") or "").strip() or None,
-                    target_product_id=(row.get("target_product_id_override") or "").strip() or None,
-                    approved_category=(row.get("category_override") or "").strip() or None,
-                    reviewer_notes=row.get("reviewer_notes", ""),
+                    approved_description=(queue_row.get("approved_description_override") or "").strip() or None,
+                    target_product_id=(queue_row.get("target_product_id_override") or "").strip() or None,
+                    approved_category=(queue_row.get("category_override") or "").strip() or None,
+                    reviewer_notes=queue_row.get("reviewer_notes", ""),
                 )
-                self.store.append_archive(archive_path, row, outcome)
+                self.store.append_archive(archive_path, queue_row, outcome)
                 processed += 1
             except Exception as exc:  # queue processing must never silently drop failed human actions
                 errors.append({"review_id": review_id, "error": str(exc)})
@@ -75,17 +75,17 @@ class ReviewQueueService:
             refreshed.extend(self.reviews.list_pending(tenant_id, limit=10_000))
         original_by_id = {row["review_id"]: row for row in rows}
         error_by_id = {item["review_id"]: item["error"] for item in errors}
-        output_rows = []
+        output_rows: list[dict[str, object]] = []
         for review in refreshed:
-            row = self.store.review_to_row(review)
+            output_row = self.store.review_to_row(review)
             original = original_by_id.get(review.review_id, {})
             for field in ("approved_description_override", "target_product_id_override", "category_override", "reviewer_notes"):
-                row[field] = original.get(field, "")
+                output_row[field] = original.get(field, "")
             if review.review_id in error_by_id:
-                prefix = str(row.get("reviewer_notes", "")).strip()
-                row["reviewer_notes"] = (prefix + " | " if prefix else "") + "PROCESSING_ERROR: " + error_by_id[review.review_id]
-            row["status"] = ReviewAction.WAITING.value
-            output_rows.append(row)
+                prefix = str(output_row.get("reviewer_notes", "")).strip()
+                output_row["reviewer_notes"] = (prefix + " | " if prefix else "") + "PROCESSING_ERROR: " + error_by_id[review.review_id]
+            output_row["status"] = ReviewAction.WAITING.value
+            output_rows.append(output_row)
         self.store.write_rows(path, output_rows)
         return {
             "processed": processed,

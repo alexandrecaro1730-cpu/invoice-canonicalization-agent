@@ -9,8 +9,7 @@ import json
 import uuid
 from dataclasses import replace
 
-from invoice_canonicalizer.application.budget import CostBudget
-from invoice_canonicalizer.application.ports import CatalogRepository, ModelProvider
+from invoice_canonicalizer.application.ports import CatalogRepository, DocumentBudget, ModelProvider
 from invoice_canonicalizer.application.review_scoring import generated_candidate_score, retrieval_decision_score
 from invoice_canonicalizer.domain.attributes import extract_attributes, unsupported_attributes
 from invoice_canonicalizer.domain.errors import BudgetExceededError, ProviderError
@@ -60,7 +59,7 @@ class CanonicalizationService:
         self.top_k = top_k
         self.metrics = metrics or MetricsRegistry()
 
-    def canonicalize(self, line: InvoiceLine, budget: CostBudget | None = None) -> CanonicalizationDecision:
+    def canonicalize(self, line: InvoiceLine, budget: DocumentBudget | None = None) -> CanonicalizationDecision:
         normalized = normalize_text(line.description)
         line_hash = sha256_text(f"{line.tenant_id}|{line.partner_id}|{normalized}")
         candidate_key = sha256_text(f"candidate|{line.tenant_id}|{line.partner_id}|{normalized}")
@@ -249,7 +248,7 @@ class CanonicalizationService:
         evidence: tuple[dict[str, object], ...],
         flags: list[str],
         margin: float,
-        budget: CostBudget | None,
+        budget: DocumentBudget | None,
     ) -> CanonicalizationDecision:
         # Atomically stage a placeholder before any model call. If two workers discover the same
         # new wording at once, the partial unique index selects one owner; every loser attaches to
@@ -422,7 +421,8 @@ class CanonicalizationService:
         evidence: tuple[dict[str, object], ...],
         flags: list[str],
     ) -> CanonicalizationDecision:
-        top_score = float(evidence[0].get("score", 0.0)) if evidence else 0.0
+        raw_top_score = evidence[0].get("score", 0.0) if evidence else 0.0
+        top_score = float(raw_top_score) if isinstance(raw_top_score, (str, int, float)) else 0.0
         review = self._create_review(
             line=line,
             candidate_key=candidate_key,

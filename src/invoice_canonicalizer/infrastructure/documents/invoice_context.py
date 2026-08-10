@@ -356,7 +356,7 @@ def context_from_json_payload(payload: dict[str, object]) -> InvoiceContext:
     subtotal = raw_financials.get("subtotal") or header.get("subtotal") or payload.get("subtotal")
     financials = InvoiceFinancials(
         currency=str(currency) if currency else None,
-        subtotal=parse_decimal(subtotal) if subtotal is not None else None,
+        subtotal=parse_decimal(str(subtotal)) if subtotal is not None else None,
         discount_total=parse_decimal(raw_financials.get("discount_total")) if raw_financials.get("discount_total") is not None else None,
         subtotal_after_discount=parse_decimal(raw_financials.get("subtotal_after_discount")) if raw_financials.get("subtotal_after_discount") is not None else None,
         tax_rate_percent=parse_decimal(raw_financials.get("tax_rate_percent")) if raw_financials.get("tax_rate_percent") is not None else None,
