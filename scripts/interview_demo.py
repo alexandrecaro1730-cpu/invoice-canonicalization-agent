@@ -158,7 +158,7 @@ def _retrieval_top(decision: CanonicalizationDecision) -> tuple[str, float] | No
 
 def _print_challenge_input(lines: Sequence[StoredInvoiceLine], invoice_number: str | None, parser_name: str) -> None:
     _rule("THE ORIGINAL TASK — ACTUAL INPUT", number="01")
-    print(f"  Source    : data/examples/input/challenge_invoice.pdf")
+    print("  Source    : data/examples/input/challenge_invoice.pdf")
     print(f"  Invoice   : #{_text(invoice_number)}")
     print(f"  Parser    : {parser_name}")
     print()
@@ -273,7 +273,7 @@ def _print_learning(approved_description: str, learned: CanonicalizationDecision
     print(f"    canonical product    {_text(learned.canonical_description)}")
     print(f"    decision             {learned.decision_kind.value}")
     print(f"    additional LLM calls {additional_calls}")
-    print(f"    human review         0")
+    print("    human review         0")
     print()
     _panel([
         "FIRST OCCURRENCE                           FUTURE OCCURRENCES",

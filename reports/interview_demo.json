@@ -258,14 +258,14 @@
     "additional_llm_calls_for_repeats": 0
   },
   "tier_3_human_learning": {
-    "approved_product_id": "product-ccced282-e223-48a5-bb49-6ee1c7a40acf",
+    "approved_product_id": "product-84a4ee15-a7a3-40b7-bebd-00588bfe9d3e",
     "approved_description": "Black Leather Jacket",
     "next_decision_kind": "exact_alias",
     "next_canonical_description": "Black Leather Jacket",
     "additional_llm_calls_after_approval": 0
   },
   "human_learning": {
-    "approved_product_id": "product-ccced282-e223-48a5-bb49-6ee1c7a40acf",
+    "approved_product_id": "product-84a4ee15-a7a3-40b7-bebd-00588bfe9d3e",
     "approved_description": "Black Leather Jacket",
     "next_decision_kind": "exact_alias",
     "next_canonical_description": "Black Leather Jacket",

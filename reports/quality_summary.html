@@ -1,33 +1,8 @@
 <!doctype html><html><head><meta charset='utf-8'><title>Quality Gate</title>
 <style>body{font-family:Arial,sans-serif;max-width:1100px;margin:40px auto;padding:0 20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px;text-align:left}pre{white-space:pre-wrap;background:#f4f4f4;padding:12px}</style></head>
-<body><h1>Quality Gate: PASS</h1><table><tr><th>Gate</th><th>Status</th><th>Seconds</th></tr><tr><td>lockfile</td><td>PASS</td><td>0.098</td></tr><tr><td>ruff</td><td>WARN</td><td>0.159</td></tr><tr><td>mypy</td><td>PASS</td><td>0.409</td></tr><tr><td>static_contract</td><td>PASS</td><td>0.129</td></tr><tr><td>compile</td><td>PASS</td><td>0.074</td></tr><tr><td>documentation</td><td>PASS</td><td>0.060</td></tr><tr><td>architecture</td><td>PASS</td><td>0.066</td></tr><tr><td>completeness</td><td>PASS</td><td>0.174</td></tr><tr><td>secret_scan</td><td>PASS</td><td>3.238</td></tr><tr><td>tests_with_coverage</td><td>PASS</td><td>9.428</td></tr><tr><td>coverage_threshold</td><td>PASS</td><td>0.410</td></tr><tr><td>coverage_xml</td><td>PASS</td><td>0.461</td></tr><tr><td>offline_evaluation</td><td>PASS</td><td>0.275</td></tr><tr><td>interview_demo</td><td>PASS</td><td>0.506</td></tr><tr><td>package_build</td><td>PASS</td><td>0.877</td></tr><tr><td>wheel_install_smoke</td><td>PASS</td><td>0.675</td></tr><tr><td>docker_build</td><td>SKIP</td><td>0.000</td></tr><tr><td>report_sanitization</td><td>PASS</td><td>0.001</td></tr></table><h2>lockfile - PASS</h2><pre>Lockfile gate passed: 16 runtime pins, 40 CI/dev pins</pre><h2>ruff - WARN</h2><pre>F541 [*] f-string without any placeholders
-   --&gt; scripts/interview_demo.py:161:11
-    |
-159 | def _print_challenge_input(lines: Sequence[StoredInvoiceLine], invoice_number: str | None, parser_name: str) -&gt; None:
-160 |     _rule(&quot;THE ORIGINAL TASK — ACTUAL INPUT&quot;, number=&quot;01&quot;)
-161 |     print(f&quot;  Source    : data/examples/input/challenge_invoice.pdf&quot;)
-    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-162 |     print(f&quot;  Invoice   : #{_text(invoice_number)}&quot;)
-163 |     print(f&quot;  Parser    : {parser_name}&quot;)
-    |
-help: Remove extraneous `f` prefix
-
-F541 [*] f-string without any placeholders
-   --&gt; scripts/interview_demo.py:276:11
-    |
-274 |     print(f&quot;    decision             {learned.decision_kind.value}&quot;)
-275 |     print(f&quot;    additional LLM calls {additional_calls}&quot;)
-276 |     print(f&quot;    human review         0&quot;)
-    |           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-277 |     print()
-278 |     _panel([
-    |
-help: Remove extraneous `f` prefix
-
-Found 2 errors.
-[*] 2 fixable with the `--fix` option.</pre><h2>mypy - PASS</h2><pre>Success: no issues found in 57 source files</pre><h2>static_contract - PASS</h2><pre>Static contract passed for 57 production Python modules</pre><h2>compile - PASS</h2><pre>No output</pre><h2>documentation - PASS</h2><pre>Documentation gate passed for 108 files</pre><h2>architecture - PASS</h2><pre>Architecture gate passed: 18 governed stages and all critical artifacts present</pre><h2>completeness - PASS</h2><pre>Completeness audit passed; report: reports/completeness_check.md</pre><h2>secret_scan - PASS</h2><pre>Secret scan passed</pre><h2>tests_with_coverage - PASS</h2><pre>........................................................................ [ 67%]
+<body><h1>Quality Gate: PASS</h1><table><tr><th>Gate</th><th>Status</th><th>Seconds</th></tr><tr><td>lockfile</td><td>PASS</td><td>0.127</td></tr><tr><td>ruff</td><td>PASS</td><td>0.165</td></tr><tr><td>mypy</td><td>PASS</td><td>0.416</td></tr><tr><td>static_contract</td><td>PASS</td><td>0.143</td></tr><tr><td>compile</td><td>PASS</td><td>0.089</td></tr><tr><td>documentation</td><td>PASS</td><td>0.067</td></tr><tr><td>architecture</td><td>PASS</td><td>0.073</td></tr><tr><td>completeness</td><td>PASS</td><td>0.187</td></tr><tr><td>secret_scan</td><td>PASS</td><td>3.183</td></tr><tr><td>tests_with_coverage</td><td>PASS</td><td>10.866</td></tr><tr><td>coverage_threshold</td><td>PASS</td><td>0.492</td></tr><tr><td>coverage_xml</td><td>PASS</td><td>0.503</td></tr><tr><td>offline_evaluation</td><td>PASS</td><td>0.298</td></tr><tr><td>interview_demo</td><td>PASS</td><td>0.530</td></tr><tr><td>package_build</td><td>PASS</td><td>1.052</td></tr><tr><td>wheel_install_smoke</td><td>PASS</td><td>1.047</td></tr><tr><td>docker_build</td><td>SKIP</td><td>0.000</td></tr><tr><td>report_sanitization</td><td>PASS</td><td>0.001</td></tr></table><h2>lockfile - PASS</h2><pre>Lockfile gate passed: 16 runtime pins, 40 CI/dev pins</pre><h2>ruff - PASS</h2><pre>All checks passed!</pre><h2>mypy - PASS</h2><pre>Success: no issues found in 57 source files</pre><h2>static_contract - PASS</h2><pre>Static contract passed for 57 production Python modules</pre><h2>compile - PASS</h2><pre>No output</pre><h2>documentation - PASS</h2><pre>Documentation gate passed for 108 files</pre><h2>architecture - PASS</h2><pre>Architecture gate passed: 18 governed stages and all critical artifacts present</pre><h2>completeness - PASS</h2><pre>Completeness audit passed; report: reports/completeness_check.md</pre><h2>secret_scan - PASS</h2><pre>Secret scan passed</pre><h2>tests_with_coverage - PASS</h2><pre>........................................................................ [ 67%]
 ...................................                                      [100%]
-107 passed in 4.08s</pre><h2>coverage_threshold - PASS</h2><pre>Name                                                                       Stmts   Miss Branch BrPart  Cover   Missing
+107 passed in 4.56s</pre><h2>coverage_threshold - PASS</h2><pre>Name                                                                       Stmts   Miss Branch BrPart  Cover   Missing
 ----------------------------------------------------------------------------------------------------------------------
 src/invoice_canonicalizer/application/budget.py                               29      1      6      1    94%   41
 src/invoice_canonicalizer/application/canonicalization.py                    137      3     24      3    96%   79, 116-117, 142-&gt;189
@@ -200,6 +175,6 @@ TOTAL                                                                       2617
 Building wheels for collected packages: invoice-canonicalization-agent
   Building wheel for invoice-canonicalization-agent (pyproject.toml): started
   Building wheel for invoice-canonicalization-agent (pyproject.toml): finished with status &#x27;done&#x27;
-  Created wheel for invoice-canonicalization-agent: filename=invoice_canonicalization_agent-1.0.0-py3-none-any.whl size=89874 sha256=70111372e981486aed0796d643ca1cc33241e9d2d86f8563500a482297f588f6
-  Stored in directory: /private/var/folders/66/3kjx4ck97gjfgcmxk9dyxld40000gn/T/pip-ephem-wheel-cache-just2cu3/wheels/3d/b1/5f/242803963b8977209a4ca14c1d1ff4db1d6e1135b43905227c
+  Created wheel for invoice-canonicalization-agent: filename=invoice_canonicalization_agent-1.0.0-py3-none-any.whl size=89874 sha256=198ea7f1c51e7ac9c9abb6892a554aed29a47c0c9c6764f15abc2ea22db9885a
+  Stored in directory: /private/var/folders/66/3kjx4ck97gjfgcmxk9dyxld40000gn/T/pip-ephem-wheel-cache-a5en5yxw/wheels/3d/b1/5f/242803963b8977209a4ca14c1d1ff4db1d6e1135b43905227c
 Successfully built invoice-canonicalization-agent</pre><h2>wheel_install_smoke - PASS</h2><pre>{&quot;description&quot;: &quot;Crew Socks&quot;, &quot;review&quot;: false}</pre><h2>docker_build - SKIP</h2><pre>Docker engine is not installed</pre><h2>report_sanitization - PASS</h2><pre>No build-environment paths or private package-index hosts found</pre></body></html>
