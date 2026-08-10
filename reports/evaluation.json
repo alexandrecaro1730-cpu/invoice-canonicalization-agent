@@ -183,7 +183,7 @@
       "actual_transaction_review": false,
       "correct": true,
       "decision_kind_correct": true,
-      "description": "Athletic crew socks",
+      "description": "Athletic crew sock",
       "expected": "Crew Socks",
       "expected_decision_kind": "auto_retrieval",
       "expected_knowledge_review": true,

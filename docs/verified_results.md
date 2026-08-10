@@ -6,13 +6,14 @@ Provide a concise, assessor-readable record of what the final repository actuall
 
 ## Technical description
 
-This snapshot is regenerated/confirmed for the final `v1.0.0` assessment delivery. Machine-readable reports can be recreated with `./run_assessment.sh`.
+This snapshot is regenerated/confirmed for the final `v1.2.0` assessment delivery. Machine-readable reports can be recreated with `./run_assessment.sh`.
 
 ## Final local verification
 
-- 107 automated tests passed.
+- 111 automated tests passed.
 - Branch-aware coverage: 83%, above the configured 80% minimum.
-- Six supplied challenge descriptions replay through seeded approved aliases with zero canonicalization LLM calls.
+- The six raw descriptions from the supplied invoice replay through approved aliases with zero canonicalization LLM calls.
+- The three inconsistent runs shown in the assessment are now an explicit acceptance contract: all 18 observed descriptions converge to the same six required canonical descriptions, with 0 LLM calls.
 - Challenge invoice extraction passes line arithmetic and subtotal reconciliation.
 - Eleven versioned golden regression cases match their expected canonical/routing behavior. The report separately exposes model-candidate agreement, unsafe auto-accept count, and model-review bypass count; these are regression metrics, not a population-level hallucination claim.
 - Repeated unresolved `Black Leather Jacket Midnight` occurrences reuse one pending concept/model proposal; after human approval, the next occurrence is an exact approved alias with zero additional LLM calls.

@@ -1,8 +1,8 @@
 <!doctype html><html><head><meta charset='utf-8'><title>Quality Gate</title>
 <style>body{font-family:Arial,sans-serif;max-width:1100px;margin:40px auto;padding:0 20px}table{border-collapse:collapse;width:100%}th,td{border:1px solid #ccc;padding:8px;text-align:left}pre{white-space:pre-wrap;background:#f4f4f4;padding:12px}</style></head>
-<body><h1>Quality Gate: PASS</h1><table><tr><th>Gate</th><th>Status</th><th>Seconds</th></tr><tr><td>lockfile</td><td>PASS</td><td>0.127</td></tr><tr><td>ruff</td><td>PASS</td><td>0.165</td></tr><tr><td>mypy</td><td>PASS</td><td>0.416</td></tr><tr><td>static_contract</td><td>PASS</td><td>0.143</td></tr><tr><td>compile</td><td>PASS</td><td>0.089</td></tr><tr><td>documentation</td><td>PASS</td><td>0.067</td></tr><tr><td>architecture</td><td>PASS</td><td>0.073</td></tr><tr><td>completeness</td><td>PASS</td><td>0.187</td></tr><tr><td>secret_scan</td><td>PASS</td><td>3.183</td></tr><tr><td>tests_with_coverage</td><td>PASS</td><td>10.866</td></tr><tr><td>coverage_threshold</td><td>PASS</td><td>0.492</td></tr><tr><td>coverage_xml</td><td>PASS</td><td>0.503</td></tr><tr><td>offline_evaluation</td><td>PASS</td><td>0.298</td></tr><tr><td>interview_demo</td><td>PASS</td><td>0.530</td></tr><tr><td>package_build</td><td>PASS</td><td>1.052</td></tr><tr><td>wheel_install_smoke</td><td>PASS</td><td>1.047</td></tr><tr><td>docker_build</td><td>SKIP</td><td>0.000</td></tr><tr><td>report_sanitization</td><td>PASS</td><td>0.001</td></tr></table><h2>lockfile - PASS</h2><pre>Lockfile gate passed: 16 runtime pins, 40 CI/dev pins</pre><h2>ruff - PASS</h2><pre>All checks passed!</pre><h2>mypy - PASS</h2><pre>Success: no issues found in 57 source files</pre><h2>static_contract - PASS</h2><pre>Static contract passed for 57 production Python modules</pre><h2>compile - PASS</h2><pre>No output</pre><h2>documentation - PASS</h2><pre>Documentation gate passed for 108 files</pre><h2>architecture - PASS</h2><pre>Architecture gate passed: 18 governed stages and all critical artifacts present</pre><h2>completeness - PASS</h2><pre>Completeness audit passed; report: reports/completeness_check.md</pre><h2>secret_scan - PASS</h2><pre>Secret scan passed</pre><h2>tests_with_coverage - PASS</h2><pre>........................................................................ [ 67%]
-...................................                                      [100%]
-107 passed in 4.56s</pre><h2>coverage_threshold - PASS</h2><pre>Name                                                                       Stmts   Miss Branch BrPart  Cover   Missing
+<body><h1>Quality Gate: PASS</h1><table><tr><th>Gate</th><th>Status</th><th>Seconds</th></tr><tr><td>lockfile</td><td>PASS</td><td>0.098</td></tr><tr><td>ruff</td><td>PASS</td><td>0.148</td></tr><tr><td>mypy</td><td>PASS</td><td>0.416</td></tr><tr><td>static_contract</td><td>PASS</td><td>0.131</td></tr><tr><td>compile</td><td>PASS</td><td>0.082</td></tr><tr><td>documentation</td><td>PASS</td><td>0.062</td></tr><tr><td>architecture</td><td>PASS</td><td>0.077</td></tr><tr><td>completeness</td><td>PASS</td><td>0.175</td></tr><tr><td>secret_scan</td><td>PASS</td><td>3.588</td></tr><tr><td>tests_with_coverage</td><td>PASS</td><td>9.708</td></tr><tr><td>coverage_threshold</td><td>PASS</td><td>0.459</td></tr><tr><td>coverage_xml</td><td>PASS</td><td>0.466</td></tr><tr><td>offline_evaluation</td><td>PASS</td><td>0.276</td></tr><tr><td>interview_demo</td><td>PASS</td><td>0.618</td></tr><tr><td>package_build</td><td>PASS</td><td>0.988</td></tr><tr><td>wheel_install_smoke</td><td>PASS</td><td>0.710</td></tr><tr><td>docker_build</td><td>SKIP</td><td>0.000</td></tr><tr><td>report_sanitization</td><td>PASS</td><td>0.001</td></tr></table><h2>lockfile - PASS</h2><pre>Lockfile gate passed: 16 runtime pins, 40 CI/dev pins</pre><h2>ruff - PASS</h2><pre>All checks passed!</pre><h2>mypy - PASS</h2><pre>Success: no issues found in 57 source files</pre><h2>static_contract - PASS</h2><pre>Static contract passed for 57 production Python modules</pre><h2>compile - PASS</h2><pre>No output</pre><h2>documentation - PASS</h2><pre>Documentation gate passed for 109 files</pre><h2>architecture - PASS</h2><pre>Architecture gate passed: 18 governed stages and all critical artifacts present</pre><h2>completeness - PASS</h2><pre>Completeness audit passed; report: reports/completeness_check.md</pre><h2>secret_scan - PASS</h2><pre>Secret scan passed</pre><h2>tests_with_coverage - PASS</h2><pre>........................................................................ [ 64%]
+.......................................                                  [100%]
+111 passed in 4.40s</pre><h2>coverage_threshold - PASS</h2><pre>Name                                                                       Stmts   Miss Branch BrPart  Cover   Missing
 ----------------------------------------------------------------------------------------------------------------------
 src/invoice_canonicalizer/application/budget.py                               29      1      6      1    94%   41
 src/invoice_canonicalizer/application/canonicalization.py                    137      3     24      3    96%   79, 116-117, 142-&gt;189
@@ -56,34 +56,24 @@ TOTAL                                                                       2617
   &quot;transaction_routing_accuracy&quot;: 1.0,
   &quot;unexpected_llm_call_count&quot;: 0,
   &quot;unsafe_auto_accept_count&quot;: 0
-}</pre><h2>interview_demo - PASS</h2><pre>╭────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ INVOICE CANONICALIZATION AGENT                                                                         │
-│ Deterministic first · AI only for uncertainty · Human approvals become reusable knowledge              │
-╰────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+}</pre><h2>interview_demo - PASS</h2><pre>  │ Run 3 observed       │ Required result         │
+├────┼──────────────────────┼──────────────────────┼──────────────────────┼─────────────────────────┤
+│  1 │ Steel Accessories    │ Highlife Components  │ Steel Fittings       │ Highlife Components     │
+│  2 │ Unstoppable Sneakers │ Performance Sneakers │ Athletic Shoes       │ Performance Sneakers    │
+│  3 │ Polarbear T-Shirt    │ White Tee            │ Logo T-Shirt         │ White Tee               │
+│  4 │ Grizzly T-Shirt      │ Beige Tee            │ Logo Tee             │ Beige Tee               │
+│  5 │ El Camino Shorts     │ Casual Shorts        │ Quick-Dry Shorts     │ Casual Shorts           │
+│  6 │ Black Socks          │ Crew Socks           │ Athletic Crew Socks  │ Crew Socks              │
+└────┴──────────────────────┴──────────────────────┴──────────────────────┴─────────────────────────┘
 
- 01  THE ORIGINAL TASK — ACTUAL INPUT ────────────────────────────────────────────────────────────────────
-  Source    : data/examples/input/challenge_invoice.pdf
-  Invoice   : #19283746552
-  Parser    : pdf-native-text
+  ✓ Supplied runs                3/3 converge
+  ✓ Observed variants            18/18 canonicalized
+  ✓ LLM calls                    0
+  ✓ Acceptance path              approved exact aliases only
+  This is a challenge acceptance test, separate from the 11-case golden routing/model regression set.
 
-┌─────┬─────────────────────────────────────────┬───────┬────────────┬──────────────┐
-│   # │ Original invoice description            │   Qty │       Unit │   Line total │
-├─────┼─────────────────────────────────────────┼───────┼────────────┼──────────────┤
-│   1 │ Highlife Steel Accessories              │     1 │      10.00 │        10.00 │
-│   2 │ Sneaker “Unstoppable”                   │     2 │      11.00 │        22.00 │
-│   3 │ T-Shirt White “Polarbear”               │     3 │      12.00 │        36.00 │
-│   4 │ T-Shirt Beige “Grizzly”                 │     4 │      13.00 │        52.00 │
-│   5 │ Shorts “El Camino”                      │     5 │      14.00 │        70.00 │
-│   6 │ Socks, black                            │     6 │      15.00 │        90.00 │
-└─────┴─────────────────────────────────────────┴───────┴────────────┴──────────────┘
 
-  ✓ Extraction quality           PASS
-    Calculated subtotal          280.00
-    Declared subtotal            280.00
-  ✓ Financial reconciliation     PASS
-    Currency / amount due        USD 332.40
-
- 02  REQUESTED CANONICAL RESULT ──────────────────────────────────────────────────────────────────────────
+ 03  ACTUAL INVOICE → REQUESTED CANONICAL RESULT ─────────────────────────────────────────────────────────
 ┌─────────────────────────────────────────┬─────────────────────────────┬──────────────────┐
 │ Original description                    │ Canonical description       │ Decision         │
 ├─────────────────────────────────────────┼─────────────────────────────┼──────────────────┤
@@ -100,7 +90,7 @@ TOTAL                                                                       2617
   ✓ Human reviews                0
   ✓ Result                       deterministic replay
 
- 03  NOW INTRODUCE A PRODUCT THE CATALOG DOES NOT KNOW ───────────────────────────────────────────────────
+ 04  NOW INTRODUCE A PRODUCT THE CATALOG DOES NOT KNOW ───────────────────────────────────────────────────
 
 ╭────────────────────────────────────────────────────────────────────────────────────────────────────────╮
 │ NOVELTY SCENARIO                                                                                       │
@@ -110,7 +100,7 @@ TOTAL                                                                       2617
 │ Goal:                      resolve safely without silently trusting a guess                            │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
- 04  PIPELINE TRACE — ONE UNKNOWN THROUGH ALL THREE TIERS ────────────────────────────────────────────────
+ 05  PIPELINE TRACE — ONE UNKNOWN THROUGH ALL THREE TIERS ────────────────────────────────────────────────
   DOCUMENT GATE
     ✓ extraction already validated
     ✓ arithmetic already validated
@@ -138,7 +128,7 @@ TOTAL                                                                       2617
     repeated occurrences 26
     extra model calls    0  (pending candidate is reused)
 
- 05  HUMAN APPROVAL → REUSABLE KNOWLEDGE ─────────────────────────────────────────────────────────────────
+ 06  HUMAN APPROVAL → REUSABLE KNOWLEDGE ─────────────────────────────────────────────────────────────────
 
   Reviewer decision      ✓ APPROVED
   Knowledge promoted     Black Leather Jacket Midnight  →  Black Leather Jacket
@@ -160,13 +150,34 @@ TOTAL                                                                       2617
 │ WILD  →  TAMED                                                                                         │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
+ 07  GOLDEN REGRESSION EVALUATION ────────────────────────────────────────────────────────────────────────
+  Versioned offline regression evidence — not a population-level accuracy claim.
+
+  ✓ Golden cases                 11
+    Model-driven cases           2
+  ✓ Canonical exact accuracy     100%
+  ✓ Routing accuracy             100%
+  ✓ Unexpected LLM calls         0
+  ✓ Unsafe auto-accepts          0
+  ✓ Model-review bypasses        0
+
+╭────────────────────────────────────────────────────────────────────────────────────────────────────────╮
+│ CURRENT EVIDENCE                                                                                       │
+│ 11 curated regression cases protect routing, model-call discipline, and review safety.                 │
+│                                                                                                        │
+│ NEXT BEFORE PRODUCTION                                                                                 │
+│ Larger blind labelled set → compare candidate models → quality × safety × cost × latency               │
+│ → pin the smallest / lowest-cost model that satisfies the agreed thresholds.                           │
+╰────────────────────────────────────────────────────────────────────────────────────────────────────────╯
+
  DEMO COMPLETE ───────────────────────────────────────────────────────────────────────────────────────────
 ╭────────────────────────────────────────────────────────────────────────────────────────────────────────╮
-│ ✓ Supplied challenge reproduces 6/6 approved mappings                                                  │
-│ ✓ Known descriptions resolve deterministically without an LLM                                          │
-│ ✓ Unknown descriptions are bounded, reviewable, and deduplicated                                       │
-│ ✓ Unapproved AI output never silently becomes trusted knowledge                                        │
-│ ✓ Human approval turns future occurrences into exact deterministic lookup                              │
+│ ✓ Raw challenge invoice reproduces 6/6 requested mappings                                              │
+│ ✓ All three supplied runs converge: 18/18 observed variants                                            │
+│ ✓ Challenge acceptance uses 0 LLM calls                                                                │
+│ ✓ Unknown descriptions follow a bounded, reviewable path                                               │
+│ ✓ Human approval creates reusable deterministic knowledge                                              │
+│ ✓ Golden regression tests separately protect routing and safety behavior                               │
 ╰────────────────────────────────────────────────────────────────────────────────────────────────────────╯
 
   Machine-readable evidence: reports/interview_demo.json</pre><h2>package_build - PASS</h2><pre>Processing ./.
@@ -175,6 +186,6 @@ TOTAL                                                                       2617
 Building wheels for collected packages: invoice-canonicalization-agent
   Building wheel for invoice-canonicalization-agent (pyproject.toml): started
   Building wheel for invoice-canonicalization-agent (pyproject.toml): finished with status &#x27;done&#x27;
-  Created wheel for invoice-canonicalization-agent: filename=invoice_canonicalization_agent-1.0.0-py3-none-any.whl size=89874 sha256=198ea7f1c51e7ac9c9abb6892a554aed29a47c0c9c6764f15abc2ea22db9885a
-  Stored in directory: /private/var/folders/66/3kjx4ck97gjfgcmxk9dyxld40000gn/T/pip-ephem-wheel-cache-a5en5yxw/wheels/3d/b1/5f/242803963b8977209a4ca14c1d1ff4db1d6e1135b43905227c
+  Created wheel for invoice-canonicalization-agent: filename=invoice_canonicalization_agent-1.0.0-py3-none-any.whl size=89993 sha256=b4b656d701f6349cf9f4a892e475695e1e0fe48a1cacc25911839bde0aefd77a
+  Stored in directory: /private/var/folders/66/3kjx4ck97gjfgcmxk9dyxld40000gn/T/pip-ephem-wheel-cache-bwy7oa3q/wheels/3d/b1/5f/242803963b8977209a4ca14c1d1ff4db1d6e1135b43905227c
 Successfully built invoice-canonicalization-agent</pre><h2>wheel_install_smoke - PASS</h2><pre>{&quot;description&quot;: &quot;Crew Socks&quot;, &quot;review&quot;: false}</pre><h2>docker_build - SKIP</h2><pre>Docker engine is not installed</pre><h2>report_sanitization - PASS</h2><pre>No build-environment paths or private package-index hosts found</pre></body></html>

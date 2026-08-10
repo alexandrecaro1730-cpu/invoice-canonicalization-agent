@@ -16,7 +16,7 @@ Known descriptions resolve through approved deterministic knowledge with **no LL
 - **Tenant-safe taxonomy:** the same raw description can map differently for different clients / partners
 - **Quality gate:** extraction arithmetic is validated before canonicalization
 - **Demo:** `make interview-demo`
-- **Offline test suite:** 107 tests passing, branch-aware coverage above the configured 80% threshold
+- **Offline test suite:** 111 tests passing, branch-aware coverage above the configured 80% threshold
 - **Static typing:** mypy passes with no source-code type errors
 - **Golden regression set:** 11 versioned canonicalization/routing cases
 - **Safety regression:** 0 unexpected LLM calls, 0 unsafe auto-accepts, 0 model-review bypasses
@@ -27,17 +27,18 @@ The repository is validated through an offline, reproducible quality gate. The c
 
 | Check | Verified result |
 |---|---:|
-| Automated tests | **107 passed** |
+| Automated tests | **111 passed** |
 | mypy | **PASS — no source-code type errors** |
 | Branch-aware coverage | **above the configured 80% threshold** |
-| Supplied challenge replay | **6/6 approved mappings** |
-| LLM calls on the six approved challenge aliases | **0** |
+| Raw challenge invoice replay | **6/6 approved mappings** |
+| Three-run challenge acceptance | **3/3 runs; 18/18 observed variants converge** |
+| LLM calls on challenge acceptance paths | **0** |
 | Golden regression cases | **11** |
 | Unexpected LLM calls on the golden set | **0** |
 | Unsafe auto-accepts on the golden set | **0** |
 | Model-review bypasses on the golden set | **0** |
 
-The golden set is a **versioned regression benchmark**, not a claim of population-level hallucination or unseen-product accuracy. Before production rollout, I would expand it into a larger blind labelled dataset and benchmark candidate models on **quality, safety, cost, and latency**.
+The **three-run challenge acceptance matrix** and the **golden regression set** answer different questions. The acceptance matrix proves the examples in the brief converge deterministically; the golden set exercises routing, model-call discipline, and review safety. The golden set is a **versioned regression benchmark**, not a claim of population-level hallucination or unseen-product accuracy. Before production rollout, I would expand it into a larger blind labelled dataset and benchmark candidate models on **quality, safety, cost, and latency**.
 
 Run the same evidence locally with:
 

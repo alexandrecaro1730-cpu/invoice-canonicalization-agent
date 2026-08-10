@@ -103,7 +103,7 @@ def test_high_confidence_retrieval_auto_resolves_transaction_but_stages_alias(co
     before = provider.call_count
     line = InvoiceLine(
         tenant_id="testinger", partner_id="default-partner",
-        description="Athletic crew socks", source_line_id="auto-1", total=50, currency="EUR",
+        description="Athletic crew sock", source_line_id="auto-1", total=50, currency="EUR",
     )
     decision = container.canonicalizer.canonicalize(line)
     assert provider.call_count == before

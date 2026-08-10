@@ -226,7 +226,7 @@
     "same_raw_text_different_products": true
   },
   "tier_2_high_confidence_retrieval": {
-    "input": "Athletic crew socks",
+    "input": "Athletic crew sock",
     "decision_kind": "auto_retrieval",
     "canonical_description": "Crew Socks",
     "transaction_blocked": false,
@@ -234,7 +234,7 @@
     "additional_llm_calls": 0
   },
   "high_confidence_retrieval": {
-    "input": "Athletic crew socks",
+    "input": "Athletic crew sock",
     "decision_kind": "auto_retrieval",
     "canonical_description": "Crew Socks",
     "transaction_blocked": false,
@@ -258,14 +258,14 @@
     "additional_llm_calls_for_repeats": 0
   },
   "tier_3_human_learning": {
-    "approved_product_id": "product-84a4ee15-a7a3-40b7-bebd-00588bfe9d3e",
+    "approved_product_id": "product-5fe3be6e-012e-4fc9-bedf-e975f47d56dc",
     "approved_description": "Black Leather Jacket",
     "next_decision_kind": "exact_alias",
     "next_canonical_description": "Black Leather Jacket",
     "additional_llm_calls_after_approval": 0
   },
   "human_learning": {
-    "approved_product_id": "product-84a4ee15-a7a3-40b7-bebd-00588bfe9d3e",
+    "approved_product_id": "product-5fe3be6e-012e-4fc9-bedf-e975f47d56dc",
     "approved_description": "Black Leather Jacket",
     "next_decision_kind": "exact_alias",
     "next_canonical_description": "Black Leather Jacket",
@@ -302,5 +302,82 @@
       }
     ],
     "provider_dollar_cost_claimed": false
+  },
+  "golden_regression_evaluation": {
+    "golden_dataset": "evals/cases/canonicalization_cases.jsonl",
+    "cases": 11,
+    "model_case_count": 2,
+    "model_candidate_exact_accuracy_on_golden_cases": 1.0,
+    "model_candidate_mismatch_rate_on_golden_cases": 0.0,
+    "model_review_bypass_count": 0,
+    "canonical_exact_accuracy": 1.0,
+    "transaction_routing_accuracy": 1.0,
+    "knowledge_review_accuracy": 1.0,
+    "llm_usage_accuracy": 1.0,
+    "decision_kind_accuracy": 1.0,
+    "estimated_cost_usd": "0.000000",
+    "false_blocking_bypass_count": 0,
+    "unsafe_auto_accept_count": 0,
+    "missing_knowledge_review_count": 0,
+    "unexpected_llm_call_count": 0
+  },
+  "challenge_three_run_acceptance": {
+    "source": "assessment page 1 - three inconsistent observed runs",
+    "runs": 3,
+    "variants": 18,
+    "accepted_variants": 18,
+    "llm_calls": 0,
+    "expected_canonical_descriptions": [
+      "Highlife Components",
+      "Performance Sneakers",
+      "White Tee",
+      "Beige Tee",
+      "Casual Shorts",
+      "Crew Socks"
+    ],
+    "rows": [
+      {
+        "position": 1,
+        "run_1": "Steel Accessories",
+        "run_2": "Highlife Components",
+        "run_3": "Steel Fittings",
+        "required_result": "Highlife Components"
+      },
+      {
+        "position": 2,
+        "run_1": "Unstoppable Sneakers",
+        "run_2": "Performance Sneakers",
+        "run_3": "Athletic Shoes",
+        "required_result": "Performance Sneakers"
+      },
+      {
+        "position": 3,
+        "run_1": "Polarbear T-Shirt",
+        "run_2": "White Tee",
+        "run_3": "Logo T-Shirt",
+        "required_result": "White Tee"
+      },
+      {
+        "position": 4,
+        "run_1": "Grizzly T-Shirt",
+        "run_2": "Beige Tee",
+        "run_3": "Logo Tee",
+        "required_result": "Beige Tee"
+      },
+      {
+        "position": 5,
+        "run_1": "El Camino Shorts",
+        "run_2": "Casual Shorts",
+        "run_3": "Quick-Dry Shorts",
+        "required_result": "Casual Shorts"
+      },
+      {
+        "position": 6,
+        "run_1": "Black Socks",
+        "run_2": "Crew Socks",
+        "run_3": "Athletic Crew Socks",
+        "required_result": "Crew Socks"
+      }
+    ]
   }
 }

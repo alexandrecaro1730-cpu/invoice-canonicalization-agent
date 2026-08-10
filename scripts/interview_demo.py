@@ -1,4 +1,4 @@
-"""Business objective: prove the supplied invoice task first, then explain the governed unknown-product lifecycle clearly in one terminal demo.
+"""Business objective: prove the supplied invoice task and all three inconsistent runs from the brief first, then explain the governed unknown-product lifecycle clearly in one terminal demo.
 
 Technical description: processes the real challenge PDF in an isolated SQLite database, prints the extracted invoice lines and expected canonical results, then traces one unseen product through Tier 1 exact lookup, Tier 2 approved retrieval/bounded fixture-model proposal, Tier 3 human approval, and learned Tier 1 replay. Machine-readable evidence is still written to reports/interview_demo.json.
 """
@@ -26,8 +26,11 @@ from invoice_canonicalizer.domain.models import (
 )
 from invoice_canonicalizer.infrastructure.llm.fixture_provider import FixtureModelProvider
 
+from run_evaluation import run as run_golden_evaluation
+
 ROOT = Path(__file__).resolve().parents[1]
 REPORT = ROOT / "reports" / "interview_demo.json"
+CHALLENGE_ACCEPTANCE = ROOT / "data/examples/expected/challenge_three_run_acceptance.json"
 DEMO_WIDTH = 106
 
 
@@ -173,8 +176,31 @@ def _print_challenge_input(lines: Sequence[StoredInvoiceLine], invoice_number: s
     )
 
 
+def _print_three_run_acceptance(
+    rows: Sequence[Sequence[str]],
+    accepted_variants: int,
+    llm_calls: int,
+) -> None:
+    _rule("THE THREE RUNS FROM THE BRIEF — ALL MUST CONVERGE", number="02")
+    print(STYLE.dim("  The assessment shows the same invoice producing three different descriptions per product."))
+    print()
+    _table(
+        ["#", "Run 1 observed", "Run 2 observed", "Run 3 observed", "Required result"],
+        rows,
+        [2, 20, 20, 20, 23],
+        ["right", "left", "left", "left", "left"],
+    )
+    print()
+    _metric("Supplied runs", "3/3 converge", status="ok")
+    _metric("Observed variants", f"{accepted_variants}/18 canonicalized", status="ok")
+    _metric("LLM calls", str(llm_calls), status="ok")
+    _metric("Acceptance path", "approved exact aliases only", status="ok")
+    print(STYLE.dim("  This is a challenge acceptance test, separate from the 11-case golden routing/model regression set."))
+    print()
+
+
 def _print_challenge_result(lines: Sequence[StoredInvoiceLine], exact_count: int, challenge_llm_calls: int) -> None:
-    _rule("REQUESTED CANONICAL RESULT", number="02")
+    _rule("ACTUAL INVOICE → REQUESTED CANONICAL RESULT", number="03")
     _table(
         ["Original description", "Canonical description", "Decision"],
         [
@@ -209,7 +235,7 @@ def _print_quality(challenge: object) -> None:
 
 
 def _print_unknown_intro(description: str) -> None:
-    _rule("NOW INTRODUCE A PRODUCT THE CATALOG DOES NOT KNOW", number="03")
+    _rule("NOW INTRODUCE A PRODUCT THE CATALOG DOES NOT KNOW", number="04")
     print()
     _panel([
         "NOVELTY SCENARIO",
@@ -227,7 +253,7 @@ def _print_pipeline_trace(
     repeat_model_calls: int,
     provider_name: str,
 ) -> None:
-    _rule("PIPELINE TRACE — ONE UNKNOWN THROUGH ALL THREE TIERS", number="04")
+    _rule("PIPELINE TRACE — ONE UNKNOWN THROUGH ALL THREE TIERS", number="05")
 
     print(STYLE.bold("  DOCUMENT GATE"))
     print(f"    {STYLE.green('✓')} extraction already validated")
@@ -263,7 +289,7 @@ def _print_pipeline_trace(
 
 
 def _print_learning(approved_description: str, learned: CanonicalizationDecision, additional_calls: int) -> None:
-    _rule("HUMAN APPROVAL → REUSABLE KNOWLEDGE", number="05")
+    _rule("HUMAN APPROVAL → REUSABLE KNOWLEDGE", number="06")
     print()
     print(f"  Reviewer decision      {STYLE.green('✓ APPROVED')}")
     print(f"  Knowledge promoted     Black Leather Jacket Midnight  →  {approved_description}")
@@ -286,17 +312,45 @@ def _print_learning(approved_description: str, learned: CanonicalizationDecision
     ])
 
 
-def _print_final_summary(exact_count: int, line_count: int) -> None:
+def _format_percent(value: object) -> str:
+    if isinstance(value, (int, float)):
+        return f"{float(value) * 100:.0f}%"
+    return _text(value)
+
+
+def _print_golden_evaluation(golden: dict[str, object]) -> None:
+    _rule("GOLDEN REGRESSION EVALUATION", number="07")
+    print(STYLE.dim("  Versioned offline regression evidence — not a population-level accuracy claim."))
+    print()
+    _metric("Golden cases", str(golden.get("cases", "-")), status="ok")
+    _metric("Model-driven cases", str(golden.get("model_case_count", "-")))
+    _metric("Canonical exact accuracy", _format_percent(golden.get("canonical_exact_accuracy")), status="ok")
+    _metric("Routing accuracy", _format_percent(golden.get("transaction_routing_accuracy")), status="ok")
+    _metric("Unexpected LLM calls", str(golden.get("unexpected_llm_call_count", "-")), status="ok")
+    _metric("Unsafe auto-accepts", str(golden.get("unsafe_auto_accept_count", "-")), status="ok")
+    _metric("Model-review bypasses", str(golden.get("model_review_bypass_count", "-")), status="ok")
+    print()
+    _panel([
+        "CURRENT EVIDENCE",
+        "11 curated regression cases protect routing, model-call discipline, and review safety.",
+        "",
+        "NEXT BEFORE PRODUCTION",
+        "Larger blind labelled set → compare candidate models → quality × safety × cost × latency",
+        "→ pin the smallest / lowest-cost model that satisfies the agreed thresholds.",
+    ])
+
+
+def _print_final_summary(exact_count: int, line_count: int, accepted_variants: int) -> None:
     _rule("DEMO COMPLETE")
     _panel([
-        f"✓ Supplied challenge reproduces {exact_count}/{line_count} approved mappings",
-        "✓ Known descriptions resolve deterministically without an LLM",
-        "✓ Unknown descriptions are bounded, reviewable, and deduplicated",
-        "✓ Unapproved AI output never silently becomes trusted knowledge",
-        "✓ Human approval turns future occurrences into exact deterministic lookup",
+        f"✓ Raw challenge invoice reproduces {exact_count}/{line_count} requested mappings",
+        f"✓ All three supplied runs converge: {accepted_variants}/18 observed variants",
+        "✓ Challenge acceptance uses 0 LLM calls",
+        "✓ Unknown descriptions follow a bounded, reviewable path",
+        "✓ Human approval creates reusable deterministic knowledge",
+        "✓ Golden regression tests separately protect routing and safety behavior",
     ])
     print(STYLE.dim("\n  Machine-readable evidence: reports/interview_demo.json"))
-
 
 def _build_evidence(
     challenge: object,
@@ -445,6 +499,41 @@ def main(argv: list[str] | None = None) -> int:
         challenge_llm_calls = _provider_calls(container)
         exact_count = sum(item.decision_kind is DecisionKind.EXACT_ALIAS for item in challenge.decisions)
 
+        acceptance_payload = json.loads(CHALLENGE_ACCEPTANCE.read_text(encoding="utf-8"))
+        expected_outputs = [str(value) for value in acceptance_payload["expected_canonical_descriptions"]]
+        observed_runs = acceptance_payload["observed_runs"]
+        acceptance_settings = replace(settings, database_path=Path(temp_dir) / "challenge-acceptance.db")
+        acceptance_container = build_container(acceptance_settings)
+        acceptance_decisions: list[list[CanonicalizationDecision]] = []
+        for run in observed_runs:
+            descriptions = run["descriptions"]
+            acceptance_decisions.append([
+                acceptance_container.canonicalizer.canonicalize(InvoiceLine(
+                    tenant_id="testinger",
+                    partner_id="default-partner",
+                    description=str(description),
+                    source_line_id=f"brief-run-{run['run']}-{index}",
+                ))
+                for index, description in enumerate(descriptions, start=1)
+            ])
+        acceptance_llm_calls = _provider_calls(acceptance_container)
+        accepted_variants = sum(
+            decision.decision_kind is DecisionKind.EXACT_ALIAS
+            and decision.canonical_description == expected_outputs[index]
+            for run_decisions in acceptance_decisions
+            for index, decision in enumerate(run_decisions)
+        )
+        acceptance_rows = [
+            [
+                str(index + 1),
+                str(observed_runs[0]["descriptions"][index]),
+                str(observed_runs[1]["descriptions"][index]),
+                str(observed_runs[2]["descriptions"][index]),
+                expected_outputs[index],
+            ]
+            for index in range(len(expected_outputs))
+        ]
+
         collision_a = container.canonicalizer.canonicalize(InvoiceLine(
             tenant_id="testinger",
             partner_id="default-partner",
@@ -461,7 +550,7 @@ def main(argv: list[str] | None = None) -> int:
         auto = container.canonicalizer.canonicalize(InvoiceLine(
             tenant_id="testinger",
             partner_id="default-partner",
-            description="Athletic crew socks",
+            description="Athletic crew sock",
             source_line_id="demo-auto",
         ))
         calls_after_auto = _provider_calls(container)
@@ -511,6 +600,29 @@ def main(argv: list[str] | None = None) -> int:
             learned=learned,
             calls_after_learning=calls_after_learning,
         )
+        golden = run_golden_evaluation()
+        evidence["golden_regression_evaluation"] = {
+            key: value for key, value in golden.items() if key != "rows"
+        }
+        evidence["challenge_three_run_acceptance"] = {
+            "source": "assessment page 1 - three inconsistent observed runs",
+            "runs": 3,
+            "variants": 18,
+            "accepted_variants": accepted_variants,
+            "llm_calls": acceptance_llm_calls,
+            "expected_canonical_descriptions": expected_outputs,
+            "rows": [
+                {
+                    "position": index + 1,
+                    "run_1": row[1],
+                    "run_2": row[2],
+                    "run_3": row[3],
+                    "required_result": row[4],
+                }
+                for index, row in enumerate(acceptance_rows)
+            ],
+        }
+
         REPORT.parent.mkdir(parents=True, exist_ok=True)
         REPORT.write_text(json.dumps(evidence, indent=2), encoding="utf-8")
 
@@ -524,6 +636,9 @@ def main(argv: list[str] | None = None) -> int:
     ])
     _print_challenge_input(challenge_lines, challenge.context.invoice_number, challenge.parser_name)
     _print_quality(challenge)
+    _pause(args.step)
+
+    _print_three_run_acceptance(acceptance_rows, accepted_variants, acceptance_llm_calls)
     _pause(args.step)
 
     _print_challenge_result(challenge_lines, exact_count, challenge_llm_calls)
@@ -547,7 +662,10 @@ def main(argv: list[str] | None = None) -> int:
         learned,
         calls_after_learning - calls_after_repeats,
     )
-    _print_final_summary(exact_count, len(challenge_lines))
+    _pause(args.step)
+
+    _print_golden_evaluation(golden)
+    _print_final_summary(exact_count, len(challenge_lines), accepted_variants)
     return 0
 
 

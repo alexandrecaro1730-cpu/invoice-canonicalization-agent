@@ -44,7 +44,7 @@ review-demo:
 	PYTHONPATH=src python -m invoice_canonicalizer line "Black Leather Jacket Midnight" --source-line-id demo-novel
 	PYTHONPATH=src python -m invoice_canonicalizer line "BLACK LEATHER JACKET MIDNIGHT!!!" --source-line-id demo-repeat
 	PYTHONPATH=src python -m invoice_canonicalizer line "Black crew athletic sock" --source-line-id demo-llm-existing
-	PYTHONPATH=src python -m invoice_canonicalizer line "Athletic crew socks" --source-line-id demo-auto
+	PYTHONPATH=src python -m invoice_canonicalizer line "Athletic crew sock" --source-line-id demo-auto
 	PYTHONPATH=src python -m invoice_canonicalizer review-export --tenant testinger --path .runtime/review_queue.csv
 	@echo "Edit .runtime/review_queue.csv, then run: make review-process"
 
